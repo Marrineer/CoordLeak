@@ -2,9 +2,10 @@ name: CoordLeak
 version: '1.0-SNAPSHOT'
 main: com.qhuy.coordLeak.CoordLeak
 api-version: '1.21'
+load: POSTWORLD
 authors: [ qhuy ]
 description: Allows players to buy usages to leak the coordinates of random online players.
-depend: [Vault]
+depend: [Vault, PlaceHolderAPI]
 softdepend: [Essentials]
 permissions:
   coordleak.admin:

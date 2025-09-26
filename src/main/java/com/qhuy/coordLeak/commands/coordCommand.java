@@ -3,6 +3,7 @@ package com.qhuy.coordLeak.commands;
 import com.qhuy.coordLeak.CoordLeak;
 import com.qhuy.coordLeak.utils.DatabaseManager;
 import com.qhuy.coordLeak.utils.message;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -28,40 +29,33 @@ public class coordCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
         String prefix = plugin.getConfig().getString("prefix", "");
         if(!(sender instanceof Player player)) {
-            sender.sendMessage(message.parse(prefix + " " + message.get("onlyPlayer")));
+            sender.sendMessage(message.get("onlyPlayer"));
             return true;
         }
         if(args.length != 0) {
-            sender.sendMessage(message.parse(prefix + " " + message.get("invalidArgument")));
+            sender.sendMessage(message.parse(prefix + " " + message.get("invalidArgument"), player));
             return true;
         }
         List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
         players.remove(sender);
         if(players.isEmpty()) {
-            player.sendMessage(message.parse(prefix + " " + message.get("noOneIsOnline")));
+            player.sendMessage(message.parse(prefix + " " + message.get("noOneIsOnline"), player));
             return true;
         }
         databaseManager.getUsageCountAsync(player.getUniqueId(), plugin, (count) -> {
             if (count <= 0) {
-                player.sendMessage(message.parse(prefix + " " + message.get("noUsageLeft")));
+                player.sendMessage(message.parse(prefix + " " + message.get("noUsageLeft"), player));
                 return;
             }
 
             Player target = players.get(ThreadLocalRandom.current().nextInt(players.size()));
             databaseManager.onUsageAsync(player.getUniqueId(), plugin);
-
-            double x = target.getX();
-            double z = target.getZ();
-            String dimension = target.getWorld().getName();
-
-            player.sendMessage(message.format(prefix + "randomSelect.message", Map.of()));
-            player.sendMessage(message.format("randomSelect.target", Map.of("player", target.getName())));
-            player.sendMessage(message.format("randomSelect.coord", Map.of(
-                    "x", String.valueOf(x),
-                    "z", String.valueOf(z)
-            )));
-            player.sendMessage(message.format("randomSelect.dimension", Map.of("dimension", dimension)));
-            target.sendMessage(message.parse(message.get("leak.exposed")));
+            
+            player.sendMessage(message.parse(plugin.getMessage().getString("randomSelect.message", "Message not found"), player));
+            player.sendMessage(message.parse(plugin.getMessage().getString("randomSelect.target", "Message not found"), player));
+            player.sendMessage(message.parse(plugin.getMessage().getString("randomSelect.coord", "Message not found"), player));
+            player.sendMessage(message.parse(plugin.getMessage().getString("randomSelect.dimension", "Message not found"), player));
+            target.sendMessage(message.get("leak.exposed"));
         });
 
         return true;

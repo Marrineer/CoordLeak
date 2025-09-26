@@ -8,14 +8,13 @@ noUsageLeft: "<red>You have no more uses left for this command. Visit the shop t
 configReloaded: "Config reloaded"
 noOneIsOnline: "<red>No players are currently online.</red>"
 setSuccess: "<green>Set usage count successfully</green>"
-onlyPlayer: "<red>Only player can use this command"
+onlyPlayer: "Only player can use this command"
 
-# Supported placeholder: {player}, {x}, {y}, {dimension}
 randomSelect:
   message: "<white>ᴀ ʀᴀɴᴅᴏᴍ ᴘʟᴀʏᴇʀ ʜᴀѕ ʙᴇᴇɴ ѕᴇʟᴇᴄᴛᴇᴅ"
-  target: "<white>ᴛᴀʀɢᴇᴛ: <cyan>{player}"
-  coord: "<white>ᴄᴏᴏʀᴅ: <cyan>X={x}, Z={z}"
-  dimension: "<white>ᴅɪᴍᴇɴѕɪᴏɴ: <cyan>{dimension}"
+  target: "<white>ᴛᴀʀɢᴇᴛ: <cyan>%player_name%"
+  coord: "<white>ᴄᴏᴏʀᴅ: <cyan>X=%coordleak_posx%, Z=%coordleak_posz%"
+  dimension: "<white>ᴅɪᴍᴇɴѕɪᴏɴ: <cyan>%coordleak_dimension%"
 
 leak:
   exposed: "<red>Your location has been leaked!"

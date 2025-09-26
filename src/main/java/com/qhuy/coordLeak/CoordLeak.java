@@ -4,6 +4,7 @@ import com.qhuy.coordLeak.commands.buyusageCommand;
 import com.qhuy.coordLeak.commands.coordCommand;
 import com.qhuy.coordLeak.commands.reloadCommand;
 import com.qhuy.coordLeak.commands.setusageCommand;
+import com.qhuy.coordLeak.utils.CoordLeakExpansion;
 import net.milkbowl.vault.economy.Economy;
 import com.qhuy.coordLeak.utils.DatabaseManager;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -46,6 +47,11 @@ public final class CoordLeak extends JavaPlugin {
             getLogger().warning("Could not setup Economy, disabling plugin...");
             Bukkit.getPluginManager().disablePlugin(this);
         }
+        if (Bukkit.getPluginManager().getPlugin("PlaceHolderAPI") != null) {
+            new CoordLeakExpansion().register();
+        } else {
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
         databaseManager = new DatabaseManager();
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
             try {
@@ -58,6 +64,7 @@ public final class CoordLeak extends JavaPlugin {
                 });
             }
         });
+
         Bukkit.getPluginCommand("buyusage").setExecutor(new buyusageCommand(this, databaseManager));
         Bukkit.getPluginCommand("coord").setExecutor(new coordCommand(this, databaseManager));
         Bukkit.getPluginCommand("creload").setExecutor(new reloadCommand(this));
@@ -94,8 +101,7 @@ public final class CoordLeak extends JavaPlugin {
         text.append("&8|\n");
         text.append("&8| &9Contact:\n");
         text.append("&8|   &9Email: &bzenythqh@gmail.com\n");
-        text.append("&8|   &9Discord: &b@qhuy120420\n");
-        text.append("&8|   &9Modrinth: &bZenythqh\n");
+        text.append("&8|   &9Discord: &b@zenythqh\n");
         text.append("&8|\n");
         text.append("&8[]=========================================[]\n");
 

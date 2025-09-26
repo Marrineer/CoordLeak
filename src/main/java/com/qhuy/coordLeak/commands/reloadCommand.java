@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class reloadCommand implements CommandExecutor {
-    private CoordLeak plugin;
+    private final CoordLeak plugin;
 
     public reloadCommand(CoordLeak plugin) { this.plugin = plugin; }
 

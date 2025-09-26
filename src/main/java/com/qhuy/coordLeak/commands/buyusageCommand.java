@@ -3,6 +3,7 @@ package com.qhuy.coordLeak.commands;
 import com.qhuy.coordLeak.CoordLeak;
 import com.qhuy.coordLeak.utils.DatabaseManager;
 import com.qhuy.coordLeak.utils.message;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,22 +26,22 @@ public class buyusageCommand implements CommandExecutor {
         String prefix = plugin.getConfig().getString("prefix", "");
         double price = plugin.getConfig().getDouble("price", 500);
         if(!(sender instanceof Player player)) {
-            sender.sendMessage(message.parse(prefix + " " + message.get("onlyPlayer")));
+            sender.sendMessage(message.get("onlyPlayer"));
             return true;
         }
         if(args.length != 0) {
-            player.sendMessage(message.parse(prefix + " " + message.get("invalidArgument")));
+            player.sendMessage(message.parse(prefix + " " + message.get("invalidArgument"), player));
             return true;
         }
         UUID targetUUID = player.getUniqueId();
         double balance = plugin.getEconomy().getBalance(player);
         if(balance < price) {
-            player.sendMessage(message.parse(prefix + " " + message.get("soPoor")));
+            player.sendMessage(message.parse(prefix + " " + message.get("soPoor"), player));
             return true;
         }
         plugin.getEconomy().withdrawPlayer(player, price);
         databaseManager.addUsageCountAsync(targetUUID, plugin);
-        player.sendMessage(message.parse(prefix + " " + message.get("buySuccessfully")));
+        player.sendMessage(message.parse(prefix + " " + message.get("buySuccessfully"), player));
 
         return true;
     }
