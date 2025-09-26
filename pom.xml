@@ -63,10 +63,6 @@
                            </transformers>
                             <relocations>
                                 <relocation>
-                                    <pattern>net.kyori.adventure</pattern>
-                                    <shadedPattern>com.qhuy.coordleak.shaded.adventure</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>org.sqlite</pattern>
                                     <shadedPattern>com.qhuy.coordleak.shaded.sqlite</shadedPattern>
                                 </relocation>
