@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -51,10 +52,13 @@ public class coordCommand implements CommandExecutor {
             Player target = players.get(ThreadLocalRandom.current().nextInt(players.size()));
             databaseManager.onUsageAsync(player.getUniqueId(), plugin);
 
-            player.sendMessage(message.parse(plugin.getMessage().getString("randomSelect.message", "Message not found"), player));
-            player.sendMessage(message.parse(plugin.getMessage().getString("randomSelect.target", "Message not found"), player));
-            player.sendMessage(message.parse(plugin.getMessage().getString("randomSelect.coord", "Message not found"), player));
-            player.sendMessage(message.parse(plugin.getMessage().getString("randomSelect.dimension", "Message not found"), player));
+            List<String> keys = Arrays.asList("message", "target", "coord", "dimension");
+            for(String key : keys) {
+                player.sendMessage(message.parse(
+                        plugin.getMessage().getString("randomSelect" + key, "Message not found"),
+                        player
+                ));
+            }
             target.sendMessage(message.get("leak.exposed"));
         });
 
