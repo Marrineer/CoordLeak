@@ -24,27 +24,27 @@ public class setusageCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
         String prefix = plugin.getConfig().getString("prefix");
         if(!(sender.hasPermission("coordleak.admin"))) {
-            sender.sendMessage(message.get("permission"));
+            message.send(message.get("permission"), sender);
             return true;
         }
         if(args.length != 2) {
-            sender.sendMessage(message.get("invalidArgument"));
+            message.send(message.get("invalidArgument"), sender);
             return true;
         }
         int count;
         try {
             count = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
-            sender.sendMessage(MiniMessage.miniMessage().deserialize(prefix + " Invalid Number"));
+            message.send(MiniMessage.miniMessage().deserialize("Invalid Number"), sender);
             return true;
         }
         Player target = Bukkit.getPlayerExact(args[0]);
         if(target == null) {
-            sender.sendMessage(message.get("invalidPlayer"));
+            message.send(message.get("invalidPlayer"), sender);
             return true;
         }
         databaseManager.setUsageCountAsync(target.getUniqueId(), plugin, count);
-        sender.sendMessage(message.get("setSuccess"));
+        message.send(message.get("setSuccess"), sender);
 
         return true;
     }

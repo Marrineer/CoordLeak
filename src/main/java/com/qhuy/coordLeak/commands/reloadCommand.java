@@ -15,12 +15,12 @@ public class reloadCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, String label, String[] args) {
         if(!(sender.hasPermission("coordleak.admin"))) {
-            sender.sendMessage(message.get("permission"));
+            message.send(message.get("permission"), sender);
             return true;
         }
         plugin.reloadConfig();
         plugin.reload();
-        sender.sendMessage(message.get("configReloaded"));
+        message.send(message.get("configReloaded"), sender);
 
         return true;
     }

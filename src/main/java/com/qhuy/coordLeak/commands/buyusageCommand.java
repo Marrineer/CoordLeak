@@ -26,22 +26,22 @@ public class buyusageCommand implements CommandExecutor {
         String prefix = plugin.getConfig().getString("prefix", "");
         double price = plugin.getConfig().getDouble("price", 500);
         if(!(sender instanceof Player player)) {
-            sender.sendMessage(message.get("onlyPlayer"));
+            message.send(message.get("onlyPlayer"), sender);
             return true;
         }
         if(args.length != 0) {
-            player.sendMessage(message.parse(prefix + " " + message.get("invalidArgument"), player));
+            message.send(message.get("invalidArgument"), sender);
             return true;
         }
         UUID targetUUID = player.getUniqueId();
         double balance = plugin.getEconomy().getBalance(player);
         if(balance < price) {
-            player.sendMessage(message.parse(prefix + " " + message.get("soPoor"), player));
+            message.send(message.get("soPoor"), sender);
             return true;
         }
         plugin.getEconomy().withdrawPlayer(player, price);
         databaseManager.addUsageCountAsync(targetUUID, plugin);
-        player.sendMessage(message.parse(prefix + " " + message.get("buySuccessfully"), player));
+        message.send(message.get("buySuccessfully"), sender);
 
         return true;
     }

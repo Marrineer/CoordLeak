@@ -21,6 +21,14 @@ public class message {
         return MiniMessage.miniMessage().deserialize(PlaceholderAPI.setPlaceholders(player, message));
     }
     public static Component get(String placeholder) {
-        return MiniMessage.miniMessage().deserialize(CoordLeak.getInstance().getMessage().getString(placeholder));
+        return MiniMessage.miniMessage().deserialize(
+                CoordLeak.getInstance().getMessage().getString(placeholder, "Message Not Found")
+        );
+    }
+    public static void send(Component component, CommandSender sender) {
+        CoordLeak.getInstance().audience(sender).sendMessage(component);
+    }
+    public static void sendToPlayer(Component component, Player player) {
+        CoordLeak.getInstance().audience(player).sendMessage(component);
     }
 }

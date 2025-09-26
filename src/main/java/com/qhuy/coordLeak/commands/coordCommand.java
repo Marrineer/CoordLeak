@@ -28,24 +28,23 @@ public class coordCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
-        String prefix = plugin.getConfig().getString("prefix", "");
         if(!(sender instanceof Player player)) {
-            sender.sendMessage(message.get("onlyPlayer"));
+            message.send(message.get("onlyPlayer"), sender);
             return true;
         }
         if(args.length != 0) {
-            sender.sendMessage(message.parse(prefix + " " + message.get("invalidArgument"), player));
+            message.send(message.get("invalidArgument"), sender);
             return true;
         }
         List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
         players.remove(sender);
         if(players.isEmpty()) {
-            player.sendMessage(message.parse(prefix + " " + message.get("noOneIsOnline"), player));
+            message.send(message.get("noOneIsOnline"), sender);
             return true;
         }
         databaseManager.getUsageCountAsync(player.getUniqueId(), plugin, (count) -> {
             if (count <= 0) {
-                player.sendMessage(message.parse(prefix + " " + message.get("noUsageLeft"), player));
+                message.send(message.get("noUsageLeft"), sender);
                 return;
             }
 
@@ -59,7 +58,7 @@ public class coordCommand implements CommandExecutor {
                         player
                 ));
             }
-            target.sendMessage(message.get("leak.exposed"));
+            message.sendToPlayer(message.get("leak.exposed"), target);
         });
 
         return true;

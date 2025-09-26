@@ -5,13 +5,16 @@ import com.qhuy.coordLeak.commands.coordCommand;
 import com.qhuy.coordLeak.commands.reloadCommand;
 import com.qhuy.coordLeak.commands.setusageCommand;
 import com.qhuy.coordLeak.utils.CoordLeakExpansion;
+import net.kyori.adventure.audience.Audience;
 import net.milkbowl.vault.economy.Economy;
 import com.qhuy.coordLeak.utils.DatabaseManager;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -121,6 +124,12 @@ public final class CoordLeak extends JavaPlugin {
     }
     public Economy getEconomy() {
         return econ;
+    }
+    public Audience audience(CommandSender sender) {
+        return adventure.sender(sender);
+    }
+    public Audience audience(Player player) {
+        return adventure.player(player);
     }
     public void reload() {
         messages = YamlConfiguration.loadConfiguration(file);
