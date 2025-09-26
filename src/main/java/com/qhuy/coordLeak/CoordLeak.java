@@ -78,10 +78,7 @@ public final class CoordLeak extends JavaPlugin {
     public void onDisable() {
         info("Disabling");
         if(databaseManager != null) {
-            Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
-                databaseManager.disconnect(this);
-                getLogger().info("Database disconnected");
-            });
+            databaseManager.disconnect(this);    
         }
         if(this.adventure != null) {
             this.adventure.close();
