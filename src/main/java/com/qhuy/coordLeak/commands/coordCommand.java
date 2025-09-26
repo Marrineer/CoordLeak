@@ -3,6 +3,7 @@ package com.qhuy.coordLeak.commands;
 import com.qhuy.coordLeak.CoordLeak;
 import com.qhuy.coordLeak.utils.DatabaseManager;
 import com.qhuy.coordLeak.utils.message;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -53,10 +54,10 @@ public class coordCommand implements CommandExecutor {
 
             List<String> keys = Arrays.asList("message", "target", "coord", "dimension");
             for(String key : keys) {
-                player.sendMessage(message.parse(
-                        plugin.getMessage().getString("randomSelect" + key, "Message not found"),
+                message.send(message.parse(
+                        plugin.getMessage().getString("randomSelect." + key, "Message not found"),
                         player
-                ));
+                ), sender);
             }
             message.sendToPlayer(message.get("leak.exposed"), target);
         });
