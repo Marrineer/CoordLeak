@@ -53,17 +53,17 @@ invalidArgument: "<yellow>Invalid argument. Please check your command.</yellow>"
 invalidPlayer: "<yellow>That player is not online or does not exist.</yellow>"
 notEnoughBalance: "<red>You don't have enough balance.</red>"
 buySuccessfully: "<green>You have successfully purchased</green>"
-soPoor: "<red>You have no more uses left for this command. Visit the shop to get more!</red>"
+noUsageLeft: "<red>You have no more uses left for this command. Visit the shop to get more!</red>"
 configReloaded: "Config reloaded"
 noOneIsOnline: "<red>No players are currently online.</red>"
 setSuccess: "<green>Set usage count successfully</green>"
+onlyPlayer: "Only player can use this command"
 
-# Supported placeholder: {player}, {x}, {y}, {dimension}
 randomSelect:
   message: "<white>ᴀ ʀᴀɴᴅᴏᴍ ᴘʟᴀʏᴇʀ ʜᴀѕ ʙᴇᴇɴ ѕᴇʟᴇᴄᴛᴇᴅ"
-  target: "<white>ᴛᴀʀɢᴇᴛ: <cyan>{player}"
-  coord: "<white>ᴄᴏᴏʀᴅ: <cyan>X={x}, Z={z}"
-  dimension: "<white>ᴅɪᴍᴇɴѕɪᴏɴ: <cyan>{dimension}"
+  target: "<white>ᴛᴀʀɢᴇᴛ: <cyan>%player_name%"
+  coord: "<white>ᴄᴏᴏʀᴅ: <cyan>X=%coordleak_posx%, Z=%coordleak_posz%"
+  dimension: "<white>ᴅɪᴍᴇɴѕɪᴏɴ: <cyan>%coordleak_dimension%"
 
 leak:
   exposed: "<red>Your location has been leaked!"
@@ -73,6 +73,17 @@ leak:
 
 *   **Vault**: (Required) For economy integration.
 *   **Essentials**: (Optional) Soft dependency.
+
+## Placeholders
+
+* **%coordleak_posx%**  
+  Returns the player's X coordinate.
+
+* **%coordleak_posz%**  
+  Returns the player's Z coordinate.
+
+* **%coordleak_dimension%**  
+  Returns the name of the world/dimension the player is currently in.
 
 ## Note
 

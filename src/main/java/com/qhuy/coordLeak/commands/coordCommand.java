@@ -50,7 +50,7 @@ public class coordCommand implements CommandExecutor {
 
             Player target = players.get(ThreadLocalRandom.current().nextInt(players.size()));
             databaseManager.onUsageAsync(player.getUniqueId(), plugin);
-            
+
             player.sendMessage(message.parse(plugin.getMessage().getString("randomSelect.message", "Message not found"), player));
             player.sendMessage(message.parse(plugin.getMessage().getString("randomSelect.target", "Message not found"), player));
             player.sendMessage(message.parse(plugin.getMessage().getString("randomSelect.coord", "Message not found"), player));
