@@ -49,8 +49,9 @@ public class coordCommand implements CommandExecutor {
             }
 
             Player target = players.get(ThreadLocalRandom.current().nextInt(players.size()));
-            databaseManager.onUsageAsync(player.getUniqueId(), plugin);
-
+            if (!player.isOp() && !player.hasPermission("coordleak.admin")) {
+                databaseManager.onUsageAsync(player.getUniqueId(), plugin);
+            }
             List<String> keys = Arrays.asList("message", "target", "coord", "dimension");
             for(String key : keys) {
                 CoordLeak.getInstance().audience(player).sendMessage(
