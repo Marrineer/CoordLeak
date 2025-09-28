@@ -3,7 +3,6 @@ package com.qhuy.coordLeak.commands;
 import com.qhuy.coordLeak.CoordLeak;
 import com.qhuy.coordLeak.utils.DatabaseManager;
 import com.qhuy.coordLeak.utils.message;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,25 +22,27 @@ public class buyusageCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
-        String prefix = plugin.getConfig().getString("prefix", "");
         double price = plugin.getConfig().getDouble("price", 500);
-        if(!(sender instanceof Player player)) {
-            message.send(message.get("onlyPlayer"), sender);
+        Player player = null;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        } else {
+            message.sendToSender(message.get("onlyPlayer"), sender);
             return true;
         }
-        if(args.length != 0) {
-            message.send(message.get("invalidArgument"), sender);
+        if (args.length != 0) {
+            message.sendToSender(message.get("helpFallback.buyusage"), sender);
             return true;
         }
         UUID targetUUID = player.getUniqueId();
         double balance = plugin.getEconomy().getBalance(player);
-        if(balance < price) {
-            message.send(message.get("soPoor"), sender);
+        if (balance < price) {
+            message.sendToSender(message.get("soPoor"), sender);
             return true;
         }
         plugin.getEconomy().withdrawPlayer(player, price);
         databaseManager.addUsageCountAsync(targetUUID, plugin);
-        message.send(message.get("buySuccessfully"), sender);
+        message.sendToSender(message.get("buySuccessfully"), sender);
 
         return true;
     }

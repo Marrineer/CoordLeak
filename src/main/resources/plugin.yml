@@ -1,5 +1,5 @@
 name: CoordLeak
-version: '1.0-SNAPSHOT'
+version: '0.01-b2'
 main: com.qhuy.coordLeak.CoordLeak
 api-version: '1.21'
 load: POSTWORLD

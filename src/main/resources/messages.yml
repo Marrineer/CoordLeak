@@ -10,6 +10,11 @@ noOneIsOnline: "<red>No players are currently online.</red>"
 setSuccess: "<green>Set usage count successfully</green>"
 onlyPlayer: "Only player can use this command"
 
+helpFallback:
+  setusage: "<yellow>Usage: /setusage <player> <integer>"
+  buyusage: "<yellow>Usage: /buyusage"
+  coordusage: "<yellow>Usage: /coord"
+
 randomSelect:
   message: "<white>ᴀ ʀᴀɴᴅᴏᴍ ᴘʟᴀʏᴇʀ ʜᴀѕ ʙᴇᴇɴ ѕᴇʟᴇᴄᴛᴇᴅ"
   target: "<white>ᴛᴀʀɢᴇᴛ: <cyan>%player_name%"

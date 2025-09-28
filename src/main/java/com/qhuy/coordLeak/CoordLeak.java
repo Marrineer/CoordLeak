@@ -78,7 +78,12 @@ public final class CoordLeak extends JavaPlugin {
     public void onDisable() {
         info("Disabling");
         if(databaseManager != null) {
+<<<<<<< HEAD
             databaseManager.disconnect(this);    
+=======
+            databaseManager.disconnect(this);
+            getLogger().info("Database disconnected");
+>>>>>>> 2487afc (fix(message,plugin) improve send system with papi + handle async task in onDisable)
         }
         if(this.adventure != null) {
             this.adventure.close();
