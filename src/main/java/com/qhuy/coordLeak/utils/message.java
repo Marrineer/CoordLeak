@@ -17,10 +17,6 @@ public class message {
     public message(CoordLeak plugin) {
         message.plugin = plugin;
     }
-
-    public static Component parse(String message, Player player) {
-        return MiniMessage.miniMessage().deserialize(PlaceholderAPI.setPlaceholders(player, message));
-    }
     public static Component get(String placeholder) {
         return MiniMessage.miniMessage().deserialize(
                 CoordLeak.getInstance().getMessage().getString(placeholder, "Message Not Found")

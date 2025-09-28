@@ -59,11 +59,16 @@ noOneIsOnline: "<red>No players are currently online.</red>"
 setSuccess: "<green>Set usage count successfully</green>"
 onlyPlayer: "Only player can use this command"
 
+helpFallback:
+  setusage: "<yellow>Usage: /setusage <player> <integer>"
+  buyusage: "<yellow>Usage: /buyusage"
+  coordusage: "<yellow>Usage: /coord"
+
 randomSelect:
-  message: "<white>ᴀ ʀᴀɴᴅᴏᴍ ᴘʟᴀʏᴇʀ ʜᴀѕ ʙᴇᴇɴ ѕᴇʟᴇᴄᴛᴇᴅ"
-  target: "<white>ᴛᴀʀɢᴇᴛ: <cyan>%player_name%"
-  coord: "<white>ᴄᴏᴏʀᴅ: <cyan>X=%coordleak_posx%, Z=%coordleak_posz%"
-  dimension: "<white>ᴅɪᴍᴇɴѕɪᴏɴ: <cyan>%coordleak_dimension%"
+  message: "<white>A random player has been selected!"
+  target: "<white>Target: <cyan>%player_name%"
+  coord: "<white>Coord: <cyan>X=%coordleak_posx%, Z=%coordleak_posz%"
+  dimension: "<white>Dimension: <cyan>%coordleak_dimension%"
 
 leak:
   exposed: "<red>Your location has been leaked!"

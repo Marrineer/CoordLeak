@@ -3,6 +3,7 @@ package com.qhuy.coordLeak.commands;
 import com.qhuy.coordLeak.CoordLeak;
 import com.qhuy.coordLeak.utils.DatabaseManager;
 import com.qhuy.coordLeak.utils.message;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -36,7 +37,7 @@ public class coordCommand implements CommandExecutor {
             return true;
         }
         List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
-        players.remove(sender);
+        players.remove(player);
         if(players.isEmpty()) {
             message.sendToSender(message.get("noOneIsOnline"), sender);
             return true;
@@ -52,11 +53,15 @@ public class coordCommand implements CommandExecutor {
 
             List<String> keys = Arrays.asList("message", "target", "coord", "dimension");
             for(String key : keys) {
-                message.sendToSender(
+                CoordLeak.getInstance().audience(player).sendMessage(
                         MiniMessage.miniMessage().deserialize(
-                                CoordLeak.getInstance().getMessage().getString("randomSelect." + key, "Message not found")
-                        ),
-                        sender
+                                PlaceholderAPI.setPlaceholders(
+                                        target,
+                                        MiniMessage.miniMessage().serialize(
+                                                message.get("randomSelect." + key)
+                                        )
+                                )
+                        )
                 );
             }
             message.sendToPlayer(message.get("leak.exposed"), target);
