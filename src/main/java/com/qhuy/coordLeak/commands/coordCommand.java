@@ -58,9 +58,7 @@ public class coordCommand implements CommandExecutor {
                         MiniMessage.miniMessage().deserialize(
                                 PlaceholderAPI.setPlaceholders(
                                         target,
-                                        MiniMessage.miniMessage().serialize(
-                                                message.get("randomSelect." + key)
-                                        )
+                                        message.get("randomSelect" + key)
                                 )
                         )
                 );

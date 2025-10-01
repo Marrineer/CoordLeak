@@ -2,60 +2,43 @@ package com.qhuy.coordLeak.utils;
 
 import com.qhuy.coordLeak.CoordLeak;
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 public class message {
-    private static CoordLeak plugin = null;
-
-    private static final Component PREFIX = MiniMessage.miniMessage().deserialize(
-            CoordLeak.getInstance().getConfig().getString("prefix", "Message not found")
-    );
-
-    public message(CoordLeak plugin) {
-        message.plugin = plugin;
+    private static final FileConfiguration MESSAGE =
+            CoordLeak.getInstance().getMessage();
+    private static final String PREFIX = MESSAGE.getString("prefix", "");
+    public static String get(String placeholder) {
+        return MESSAGE.getString(placeholder, "Message not found");
     }
-    public static Component get(String placeholder) {
-        return MiniMessage.miniMessage().deserialize(
-                CoordLeak.getInstance().getMessage().getString(placeholder, "Message Not Found")
-        );
-    }
-    public static void sendToSender(Component component, CommandSender sender) {
+
+    public static void sendToSender(String text, CommandSender sender) {
         if(sender instanceof Player player) {
-            CoordLeak.getInstance().audience(sender).sendMessage(
+            CoordLeak.getInstance().audience(player).sendMessage(
                     MiniMessage.miniMessage().deserialize(
                             PlaceholderAPI.setPlaceholders(
                                     player,
-                                    MiniMessage.miniMessage().serialize(
-                                            PREFIX.append(Component.space()).append(component)
-                                    )
+                                    PREFIX + text
                             )
                     )
             );
         } else {
             CoordLeak.getInstance().audience(sender).sendMessage(
-                    PREFIX.append(Component.space()).append(component)
+                    MiniMessage.miniMessage().deserialize(PREFIX + text)
             );
         }
     }
-    public static void sendToPlayer(Component component, Player player) {
+    public static void sendToPlayer(String text, Player player) {
         CoordLeak.getInstance().audience(player).sendMessage(
                 MiniMessage.miniMessage().deserialize(
                         PlaceholderAPI.setPlaceholders(
                                 player,
-                                MiniMessage.miniMessage().serialize(
-                                        PREFIX.append(
-                                                Component.space().append(component)
-                                        )
-                                )
+                                PREFIX + text
                         )
                 )
         );
-    }
-
-    private static boolean checkSender(CommandSender sender) {
-        return sender instanceof Player;
     }
 }
