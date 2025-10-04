@@ -1,42 +1,34 @@
-# CoordLeak
+CoordLeak
+=========
 
-CoordLeak is a simple Minecraft plugin that allows players to purchase "usages" with in-game currency to reveal the coordinates of a random online player.
+CoordLeak is a lightweight Minecraft plugin that lets players purchase "usages" with in-game currency to reveal the coordinates of a random online player.
 
-This is a small hobby project, created for fun.
+This is a small hobby project — built for fun.
 
-## Features
+Features
+--------
 
 *   Leak the coordinates (X, Z, and dimension) of a random player.
 *   Economy integration with Vault to buy usages.
 *   Configurable messages and prefix.
-*   Simple and lightweight.
+*   Simple, lightweight, and easy to use.
 
-## Commands & Usage
+Commands & Permissions
+----------------------
 
-### `/coord`
-Leaks the coordinates of a random online player.
-*   **Usage:** `/coord`
-*   **Permission:** `coordleak.use` (Default for all players)
-*   **Note:** This command requires the player to have at least one usage.
+| Command                        | Description                            | Permission        | Default     |
+|-------------------------------|----------------------------------------|-------------------|-------------|
+| /coord                        | Leak coordinates of a random player    | coordleak.use     | ✅ All players |
+| /buyusage                     | Buy one usage of /coord                | coordleak.use     | ✅ All players |
+| /setusage <player> <amount>   | Set usage count manually               | coordleak.admin   | ❌ OP only    |
+| /creload                      | Reload config and messages             | coordleak.admin   | ❌ OP only    |
 
-### `/buyusage`
-Gives a player one usage of the `/coord` command, charging them the configured price.
-*   **Usage:** `/buyusage`
-*   **Permission:** `coordleak.use` (Default for all players)
+Note: `/coord` requires the player to have at least one usage.
 
-### `/setusage`
-Set total usage, idk
-*   **Usage:** `/addusage <player> <amount>`
-*   **Permission:** `coordleak.admin` (Default: OP)
+Configuration
+-------------
 
-### `/creload`
-Reloads the plugin's configuration files (`config.yml` and `messages.yml`).
-*   **Usage:** `/creload`
-*   **Permission:** `coordleak.admin` (Default: OP)
-
-## Configuration
-
-### `config.yml`
+### config.yml
 ```yaml
 # The prefix that appears before plugin messages. Supports MiniMessage format.
 prefix: "<i><gradient:#FFFFFF:#29E7D7>[ Coord ]</gradient></i>"
@@ -45,10 +37,12 @@ prefix: "<i><gradient:#FFFFFF:#29E7D7>[ Coord ]</gradient></i>"
 price: 1000
 ```
 
-### `messages.yml`
+### messages.yml
+Uses MiniMessage format :D
 ```yaml
 # Legacy format color codes are not supported, use MiniMessage instead
 permission: "<red>You don't have permission to do this!</red>"
+configError: "<red>Config error, please check your config"
 invalidArgument: "<yellow>Invalid argument. Please check your command.</yellow>"
 invalidPlayer: "<yellow>That player is not online or does not exist.</yellow>"
 notEnoughBalance: "<red>You don't have enough balance.</red>"
@@ -74,31 +68,35 @@ leak:
   exposed: "<red>Your location has been leaked!"
 ```
 
-## Dependencies
+Dependencies
+------------
 
-*   **Vault**: (Required) For economy integration.
-*   **Essentials**: (Optional) Soft dependency.
+- Vault (Required) — for economy integration.
+- PlaceholderAPI (Required) - for custom placeholder.
+- Essentials (Optional) — soft dependency.
 
-## Placeholders
+Placeholders
+------------
 
-* **%coordleak_posx%**  
-  Returns the player's X coordinate.
+| Placeholder             | Description                          |
+|------------------------|--------------------------------------|
+| %coordleak_posx%       | Player's X coordinate                |
+| %coordleak_posz%       | Player's Z coordinate                |
+| %coordleak_dimension%  | Player's current world/dimension     |
 
-* **%coordleak_posz%**  
-  Returns the player's Z coordinate.
+Notes
+-----
 
-* **%coordleak_dimension%**  
-  Returns the name of the world/dimension the player is currently in.
+- Permission & message system is still a work in progress.
+- I'm just a Java beginner — code might be messy.
 
-## Note
+Contributing
+------------
 
-The permission system is not fully implemented yet. I will update it as soon as I have more time.
-BTW im just a java beginner
+Pull requests are welcome! Feel free to fork, improve, or suggest new ideas.
 
-## Contributing
+License
+-------
 
-Contributions are welcome! If you have any ideas or improvements, feel free to fork the repository and submit a pull request.
+This project is licensed under the GNU General Public License v3.0.
 
-## License
-
-This project is licensed under the **GNU General Public License v3.0**.
