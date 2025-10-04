@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class coordCommand implements CommandExecutor {
@@ -58,7 +59,7 @@ public class coordCommand implements CommandExecutor {
                         MiniMessage.miniMessage().deserialize(
                                 PlaceholderAPI.setPlaceholders(
                                         target,
-                                        plugin.getConfig().getString("prefix", "") + message.get("randomSelect." + key)
+                                        Objects.requireNonNull(CoordLeak.getInstance().getMessage().getConfigurationSection("randomSelect").getString(key))
                                 )
                         )
                 );

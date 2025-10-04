@@ -12,7 +12,7 @@ public class message {
             CoordLeak.getInstance().getMessage();
     private static final String PREFIX = CoordLeak.getInstance().getConfig().getString("prefix", "");
     public static String get(String placeholder) {
-        return MESSAGE.getString(placeholder, "Message not found");
+        return MESSAGE.getString(placeholder, MESSAGE.getDefaults().getString(placeholder, "Message not found"));
     }
 
     public static void sendToSender(String text, CommandSender sender) {
@@ -21,7 +21,7 @@ public class message {
                     MiniMessage.miniMessage().deserialize(
                             PlaceholderAPI.setPlaceholders(
                                     player,
-                                    PREFIX + text
+                                    String.format("%s %s", PREFIX, text)
                             )
                     )
             );
@@ -36,7 +36,7 @@ public class message {
                 MiniMessage.miniMessage().deserialize(
                         PlaceholderAPI.setPlaceholders(
                                 player,
-                                PREFIX + text
+                                String.format("%s %s", PREFIX, text)
                         )
                 )
         );

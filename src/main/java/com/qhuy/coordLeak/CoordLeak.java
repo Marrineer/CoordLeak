@@ -19,6 +19,8 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 
 public final class CoordLeak extends JavaPlugin {
@@ -44,6 +46,12 @@ public final class CoordLeak extends JavaPlugin {
             CoordLeak.getInstance().saveResource("messages.yml", false);
         }
         messages = YamlConfiguration.loadConfiguration(file);
+
+        FileConfiguration defaultMessage = YamlConfiguration.loadConfiguration(
+                new InputStreamReader(getResource("messages.yml"), StandardCharsets.UTF_8)
+        );
+        messages.setDefaults(defaultMessage);
+        messages.options().copyDefaults(true);
 
         this.adventure = BukkitAudiences.create(this);
         if(!setupEconomy()) {
@@ -132,5 +140,11 @@ public final class CoordLeak extends JavaPlugin {
     }
     public void reload() {
         messages = YamlConfiguration.loadConfiguration(file);
+
+        FileConfiguration defaultMessages = YamlConfiguration.loadConfiguration(
+                new InputStreamReader(getResource("messages.yml"), StandardCharsets.UTF_8)
+        );
+        messages.setDefaults(defaultMessages);
+        messages.options().copyDefaults(true);
     }
 }
