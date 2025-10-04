@@ -3,7 +3,7 @@ name: Maven CI
 on:
   push:
     tags:
-    - 'v*'
+      - 'v*'
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
@@ -11,31 +11,33 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up JDK 21 ( Temurin )
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: 'temurin'
-        cache: maven
+      - name: Set up JDK 21 ( Temurin )
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
 
-    - name: Build Project with Maven
-      run: mvn -B clean package --file ./pom.xml
+      - name: Build Project with Maven
+        run: mvn -B clean package --file ./pom.xml
 
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v2
-      with:
-        name: "${{ github.ref_name }}"
-        tag_name: "${{ github.ref_name }}"
-        body: |
-          🧪 This is an automatic release build.
-          - Commit: ${{ github.sha }}
-          - Branch: ${{ github.ref }}
-        files: |
-          target/*.jar
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "${{ github.ref_name }}"
+          tag_name: "${{ github.ref_name }}"
+          body: |
+            🧪 This is an automatic release build.
+            - Commit: ${{ github.sha }}
+            - Branch: ${{ github.ref }}
+          files: |
+            target/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
