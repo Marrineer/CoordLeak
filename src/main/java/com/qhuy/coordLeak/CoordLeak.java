@@ -51,7 +51,8 @@ public final class CoordLeak extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
         }
         if (Bukkit.getPluginManager().getPlugin("PlaceHolderAPI") != null) {
-            new CoordLeakExpansion().register();
+            CoordLeakExpansion PAPI = new CoordLeakExpansion();
+            PAPI.register();
         } else {
             Bukkit.getPluginManager().disablePlugin(this);
         }

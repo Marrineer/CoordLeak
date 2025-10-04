@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 public class message {
     private static final FileConfiguration MESSAGE =
             CoordLeak.getInstance().getMessage();
-    private static final String PREFIX = MESSAGE.getString("prefix", "");
+    private static final String PREFIX = CoordLeak.getInstance().getConfig().getString("prefix", "");
     public static String get(String placeholder) {
         return MESSAGE.getString(placeholder, "Message not found");
     }
