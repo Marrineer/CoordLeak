@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,12 +55,21 @@ public class coordCommand implements CommandExecutor {
                 databaseManager.onUsageAsync(player.getUniqueId(), plugin);
             }
             List<String> keys = Arrays.asList("message", "target", "coord", "dimension");
+            ConfigurationSection section = CoordLeak.getInstance().getMessage().getConfigurationSection("randomSelect");
             for(String key : keys) {
+                String value = (section != null) ? section.getString(key) : null;
+                if(value == null) {
+                    value = message.get("configError");
+                    CoordLeak.getInstance().audience(sender).sendMessage(
+                            MiniMessage.miniMessage().deserialize(value)
+                    );
+                    return;
+                }
                 CoordLeak.getInstance().audience(player).sendMessage(
                         MiniMessage.miniMessage().deserialize(
                                 PlaceholderAPI.setPlaceholders(
                                         target,
-                                        Objects.requireNonNull(CoordLeak.getInstance().getMessage().getConfigurationSection("randomSelect").getString(key))
+                                        CoordLeak.getInstance().getMessage().getConfigurationSection("randomSelect").getString(key)
                                 )
                         )
                 );

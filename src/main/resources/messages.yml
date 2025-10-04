@@ -1,5 +1,6 @@
 # Legacy format color codes are not supported, use MiniMessage instead
 permission: "<red>You don't have permission to do this!</red>"
+configError: "<red>Config error, please check your config"
 invalidArgument: "<yellow>Invalid argument. Please check your command.</yellow>"
 invalidPlayer: "<yellow>That player is not online or does not exist.</yellow>"
 notEnoughBalance: "<red>You don't have enough balance.</red>"
