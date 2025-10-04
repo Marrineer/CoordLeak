@@ -58,7 +58,8 @@ public class coordCommand implements CommandExecutor {
                         MiniMessage.miniMessage().deserialize(
                                 PlaceholderAPI.setPlaceholders(
                                         target,
-                                        message.get("randomSelect" + key)
+                                        CoordLeak.getInstance().getMessage()
+                                                .getString("randomSelect." + key, "Message not found")
                                 )
                         )
                 );
