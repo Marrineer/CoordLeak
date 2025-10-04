@@ -49,7 +49,7 @@ public class coordCommand implements CommandExecutor {
             }
 
             Player target = players.get(ThreadLocalRandom.current().nextInt(players.size()));
-            if (!player.isOp() && !player.hasPermission("coordleak.admin")) {
+            if (!player.isOp() || !player.hasPermission("coordleak.admin")) {
                 databaseManager.onUsageAsync(player.getUniqueId(), plugin);
             }
             List<String> keys = Arrays.asList("message", "target", "coord", "dimension");
