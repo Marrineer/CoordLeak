@@ -44,14 +44,15 @@ public class coordCommand implements CommandExecutor {
             message.sendToSender(message.get("noOneIsOnline"), sender);
             return true;
         }
+        boolean isAdmin = player.isOp() || player.hasPermission("coordleak.admin");
         databaseManager.getUsageCountAsync(player.getUniqueId(), plugin, (count) -> {
-            if (count <= 0) {
+            if (count <= 0 && !isAdmin) {
                 message.sendToSender(message.get("noUsageLeft"), sender);
                 return;
             }
 
             Player target = players.get(ThreadLocalRandom.current().nextInt(players.size()));
-            if (!player.isOp() || !player.hasPermission("coordleak.admin")) {
+            if (!isAdmin) {
                 databaseManager.onUsageAsync(player.getUniqueId(), plugin);
             }
             List<String> keys = Arrays.asList("message", "target", "coord", "dimension");
@@ -69,7 +70,7 @@ public class coordCommand implements CommandExecutor {
                         MiniMessage.miniMessage().deserialize(
                                 PlaceholderAPI.setPlaceholders(
                                         target,
-                                        CoordLeak.getInstance().getMessage().getConfigurationSection("randomSelect").getString(key)
+                                        value
                                 )
                         )
                 );
