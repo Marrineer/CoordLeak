@@ -80,7 +80,7 @@ public final class CoordLeak extends JavaPlugin {
     public void onDisable() {
         info("Disabling");
         if(databaseManager != null) {  
-            databaseManager.disconnect(this);
+            databaseManager.disconnect();
             getLogger().info("Database disconnected");
         }
         if(this.adventure != null) {

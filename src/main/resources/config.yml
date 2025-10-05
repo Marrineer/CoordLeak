@@ -1,3 +1,23 @@
+database:
+  # DB Type ( SQLITE / MYSQL )
+  type: SQLITE
+
+  # SQLITE
+  sqlite-file: data.db
+
+  # MYSQL
+  host: localhost
+  port: 3306
+  name: coordleak_db
+  user: root
+  password: password
+
 prefix: "<i><gradient:#FFFFFF:#29E7D7>[ Coord ]</gradient></i>"
 
 price: 1000
+
+settings:
+  # Boolean
+  enable-auto-save: true
+  # Second
+  auto-save-interval: 600

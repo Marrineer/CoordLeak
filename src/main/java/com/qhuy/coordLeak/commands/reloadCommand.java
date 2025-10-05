@@ -39,7 +39,7 @@ public class reloadCommand implements CommandExecutor {
             PAPI.register();
 
             // Database
-            databaseManager.disconnect(plugin);
+            databaseManager.disconnect();
             try {
                 databaseManager.connect();
             } catch (SQLException e) {

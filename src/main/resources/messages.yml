@@ -13,7 +13,7 @@ onlyPlayer: "Only player can use this command"
 
 helpFallback:
   setusage: "<yellow>Usage: /setusage <player> <integer>"
-  buyusage: "<yellow>Usage: /buyusage"
+  buyusage: "<yellow>Usage: /buyusage <integer>"
   coordusage: "<yellow>Usage: /coord"
 
 randomSelect:

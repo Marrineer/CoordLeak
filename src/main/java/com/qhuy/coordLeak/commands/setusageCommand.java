@@ -41,7 +41,7 @@ public class setusageCommand implements CommandExecutor {
             message.sendToSender(message.get("invalidPlayer"), sender);
             return true;
         }
-        databaseManager.setUsageCountAsync(target.getUniqueId(), plugin, count);
+        databaseManager.setUsage(target.getUniqueId(), count);
         message.sendToSender(message.get("setSuccess"), sender);
 
         return true;

@@ -21,6 +21,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class coordCommand implements CommandExecutor {
     private final CoordLeak plugin;
     private final DatabaseManager databaseManager;
+    private int count;
 
     public coordCommand(CoordLeak plugin, DatabaseManager databaseManager) {
         this.plugin = plugin;
@@ -44,15 +45,14 @@ public class coordCommand implements CommandExecutor {
             return true;
         }
         boolean isAdmin = player.isOp() || player.hasPermission("coordleak.admin");
-        databaseManager.getUsageCountAsync(player.getUniqueId(), plugin, (count) -> {
-            if (count <= 0 && !isAdmin) {
+        databaseManager.getUsage(player.getUniqueId(), count -> {
+            if(count == 0) {
                 message.sendToSender(message.get("noUsageLeft"), sender);
                 return;
             }
-
             Player target = players.get(ThreadLocalRandom.current().nextInt(players.size()));
             if (!isAdmin) {
-                databaseManager.onUsageAsync(player.getUniqueId(), plugin);
+                databaseManager.onUsage(player.getUniqueId());
             }
             sendRandom(target, player);
             message.sendToPlayer(message.get("leak.exposed"), target);

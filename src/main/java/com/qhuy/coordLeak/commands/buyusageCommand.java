@@ -14,6 +14,7 @@ import java.util.UUID;
 public class buyusageCommand implements CommandExecutor {
     private final CoordLeak plugin;
     private final DatabaseManager databaseManager;
+    private int usage;
 
     public buyusageCommand(CoordLeak plugin, DatabaseManager databaseManager) {
         this.plugin = plugin; 
@@ -30,7 +31,13 @@ public class buyusageCommand implements CommandExecutor {
             message.sendToSender(message.get("onlyPlayer"), sender);
             return true;
         }
-        if (args.length != 0) {
+        if (args.length != 1) {
+            message.sendToSender(message.get("helpFallback.buyusage"), sender);
+            return true;
+        }
+        try {
+            usage = Integer.parseInt(args[0]);
+        } catch (NumberFormatException e) {
             message.sendToSender(message.get("helpFallback.buyusage"), sender);
             return true;
         }
@@ -41,7 +48,7 @@ public class buyusageCommand implements CommandExecutor {
             return true;
         }
         plugin.getEconomy().withdrawPlayer(player, price);
-        databaseManager.addUsageCountAsync(targetUUID, plugin);
+        databaseManager.buyUsage(targetUUID, usage);
         message.sendToSender(message.get("buySuccessfully"), sender);
 
         return true;
