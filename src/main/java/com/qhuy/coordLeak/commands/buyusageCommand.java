@@ -1,7 +1,7 @@
 package com.qhuy.coordLeak.commands;
 
 import com.qhuy.coordLeak.CoordLeak;
-import com.qhuy.coordLeak.utils.DatabaseManager;
+import com.qhuy.coordLeak.managers.DatabaseManager;
 import com.qhuy.coordLeak.utils.message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

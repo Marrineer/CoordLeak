@@ -1,6 +1,7 @@
 package com.qhuy.coordLeak.utils;
 
 import com.qhuy.coordLeak.CoordLeak;
+import com.qhuy.coordLeak.managers.MessageManager;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
@@ -8,8 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 public class message {
-    private static final FileConfiguration MESSAGE =
-            CoordLeak.getInstance().getMessage();
+    public static final FileConfiguration MESSAGE = CoordLeak.getInstance().getMessage();
     private static final String PREFIX = CoordLeak.getInstance().getConfig().getString("prefix", "");
     public static String get(String placeholder) {
         return MESSAGE.getString(placeholder, MESSAGE.getDefaults().getString(placeholder, "Message not found"));

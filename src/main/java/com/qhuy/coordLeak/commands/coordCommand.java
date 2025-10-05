@@ -1,7 +1,7 @@
 package com.qhuy.coordLeak.commands;
 
 import com.qhuy.coordLeak.CoordLeak;
-import com.qhuy.coordLeak.utils.DatabaseManager;
+import com.qhuy.coordLeak.managers.DatabaseManager;
 import com.qhuy.coordLeak.utils.message;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -16,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class coordCommand implements CommandExecutor {
@@ -55,29 +54,38 @@ public class coordCommand implements CommandExecutor {
             if (!isAdmin) {
                 databaseManager.onUsageAsync(player.getUniqueId(), plugin);
             }
-            List<String> keys = Arrays.asList("message", "target", "coord", "dimension");
-            ConfigurationSection section = CoordLeak.getInstance().getMessage().getConfigurationSection("randomSelect");
-            for(String key : keys) {
-                String value = (section != null) ? section.getString(key) : null;
-                if(value == null) {
-                    value = message.get("configError");
-                    CoordLeak.getInstance().audience(sender).sendMessage(
-                            MiniMessage.miniMessage().deserialize(value)
-                    );
-                    return;
-                }
-                CoordLeak.getInstance().audience(player).sendMessage(
-                        MiniMessage.miniMessage().deserialize(
-                                PlaceholderAPI.setPlaceholders(
-                                        target,
-                                        value
-                                )
-                        )
-                );
-            }
+            sendRandom(target, player);
             message.sendToPlayer(message.get("leak.exposed"), target);
         });
 
         return true;
+    }
+
+    private static void sendRandom(Player player, Player sender) {
+        List<String> keys = Arrays.asList("message", "target", "coord", "dimension");
+        ConfigurationSection section = CoordLeak.getInstance().getMessage().getConfigurationSection("randomSelect");
+        for(String key : keys) {
+            String value = (section != null) ? section.getString(key) : null;
+            if(value == null) {
+                value = message.get("configError");
+                CoordLeak.getInstance().audience(sender).sendMessage(
+                        MiniMessage.miniMessage().deserialize(
+                                PlaceholderAPI.setPlaceholders(
+                                        sender,
+                                        value
+                                )
+                        )
+                );
+                return;
+            }
+            CoordLeak.getInstance().audience(sender).sendMessage(
+                    MiniMessage.miniMessage().deserialize(
+                            PlaceholderAPI.setPlaceholders(
+                                    player,
+                                    value
+                            )
+                    )
+            );
+        }
     }
 }

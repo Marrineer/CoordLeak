@@ -1,4 +1,4 @@
-package com.qhuy.coordLeak.utils;
+package com.qhuy.coordLeak.managers;
 
 import com.qhuy.coordLeak.CoordLeak;
 import org.bukkit.Bukkit;
@@ -10,6 +10,11 @@ import java.util.logging.Level;
 
 public class DatabaseManager {
     private Connection connection;
+    private final CoordLeak plugin;
+
+    public DatabaseManager(CoordLeak plugin) {
+        this.plugin = plugin;
+    }
 
     public void connect() throws SQLException {
         String url = "jdbc:sqlite:plugins/CoordLeak/data.db";

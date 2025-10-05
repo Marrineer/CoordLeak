@@ -1,6 +1,7 @@
 package com.qhuy.coordLeak.utils;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +18,7 @@ public class CoordLeakExpansion extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "1.0";
+        return "v1.0.0";
     }
 
     @Override
