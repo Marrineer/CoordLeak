@@ -60,6 +60,7 @@ public final class CoordLeak extends JavaPlugin {
         Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
             try {
                 databaseManager.connect();
+                databaseManager.startAutoSaveTask();
                 getLogger().info("Database connected");
             } catch (SQLException e) {
                 getLogger().warning("(\"Error while connecting to the database, disabling plugin...\");");

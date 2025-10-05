@@ -85,6 +85,14 @@ public class DatabaseManager {
         });
     }
 
+    public void startAutoSaveTask() {
+        int interval = plugin.getConfig().getInt("settings.auto-save-interval", 600); // giây
+        boolean enabled = plugin.getConfig().getBoolean("settings.enable-auto-save", true);
+        if (!enabled) return;
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::flushCacheToDatabase, interval * 20L, interval * 20L);
+    }
+
+
     public void getUsage(UUID uuid, Consumer<Integer> callback) {
         if (usageCache.containsKey(uuid)) {
             callback.accept(usageCache.get(uuid));
