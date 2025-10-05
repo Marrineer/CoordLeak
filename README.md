@@ -30,11 +30,25 @@ Configuration
 
 ### config.yml
 ```yaml
-# The prefix that appears before plugin messages. Supports MiniMessage format.
+database:
+  # DB Type ( SQLITE / MYSQL )
+  type: SQLITE
+  # SQLITE
+  sqlite-file: data.db
+  # MYSQL
+  host: localhost
+  port: 3306
+  name: coordleak_db
+  user: root
+  password: password
+
 prefix: "<i><gradient:#FFFFFF:#29E7D7>[ Coord ]</gradient></i>"
 
-# The price for one usage of the /coord command when using /buyusage.
 price: 1000
+
+settings:
+  enable-auto-save: true
+  auto-save-interval: 600
 ```
 
 ### messages.yml
@@ -55,7 +69,7 @@ onlyPlayer: "Only player can use this command"
 
 helpFallback:
   setusage: "<yellow>Usage: /setusage <player> <integer>"
-  buyusage: "<yellow>Usage: /buyusage"
+  buyusage: "<yellow>Usage: /buyusage <integer>"
   coordusage: "<yellow>Usage: /coord"
 
 randomSelect:
