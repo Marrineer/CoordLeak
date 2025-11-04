@@ -10,6 +10,7 @@ configReloaded: "<green>Config reloaded successfully</green>"
 noOneIsOnline: "<red>No players are currently online.</red>"
 setSuccess: "<green>Set usage count successfully</green>"
 onlyPlayer: "<red>Only player can use this command</red>"
+cannotTargetYourself: "You cannot target yourself!"
 cooldownMessage: "<red>You are on cooldown. Please wait before using this command again.</red>"
 
 help:

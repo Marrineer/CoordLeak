@@ -98,11 +98,15 @@ public class CoordCommand implements CommandExecutor, TabCompleter {
                         Message.sendToSender(Message.get("invalidPlayer"), sender);
                         return;
                     }
+                    if(player.getUniqueId() == targetShare.getUniqueId()) {
+                        Message.sendToSender(Message.get("cannotTargetYourself"), sender);
+                        return;
+                    }
                     String customText = null;
                     if (args.length > 2) {
                         customText = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
                     }
-                    List<String> strList = CoordLeak.getInstance().getMessage().getStringList("shareCord");
+                    List<String> strList = CoordLeak.getInstance().getMessage().getStringList("shareCoord");
                     if (customText != null) {
                         strList.set(1, customText);
                     }

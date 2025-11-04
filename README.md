@@ -17,10 +17,11 @@ Features
 Commands & Permissions
 ----------------------
 
-| Command       | Description                            | Permission        | Default     |
-|---------------|----------------------------------------|-------------------|-------------|
-| /coord leak   | Leak coordinates of a random player    | coordleak.use     | ✅ All players |
-| /coord reload | Reload config and messages             | coordleak.admin   | ❌ OP only    |
+| Command       | Description                         | Permission      | Default       |
+|---------------|-------------------------------------|-----------------|---------------|
+| /coord leak   | Leak coordinates of a random player | coordleak.use   | ✅ All players |
+| /coord share  | Share your location to someone      | coordleak.use   | ✅ All players |
+| /coord reload | Reload config and messages          | coordleak.admin | ❌ OP only     |
 
 Configuration
 -------------
@@ -52,15 +53,16 @@ configReloaded: "<green>Config reloaded successfully</green>"
 noOneIsOnline: "<red>No players are currently online.</red>"
 setSuccess: "<green>Set usage count successfully</green>"
 onlyPlayer: "<red>Only player can use this command</red>"
+cannotTargetYourself: "You cannot target yourself!"
 cooldownMessage: "<red>You are on cooldown. Please wait before using this command again.</red>"
 
 help:
   - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
   - " <white><gradient:#29E7D7:#FFFFFF>CoordLeak Commands</gradient>"
   - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
-  - " <gray>• <click:suggest_command:'/coord use'><white>/coord use</white></click> <gray>- Leak random player's location</gray>"
+  - " <gray>• <click:suggest_command:'/coord leak'><white>/coord use</white></click> <gray>- Leak random player's location</gray>"
+  - " <gray>• <click:suggest_command:'/coord share <Player> <Text>'><white>/coord reload</white></click> <gray>- Share your location</gray>"
   - " <gray>• <click:suggest_command:'/coord reload'><white>/coord reload</white></click> <gray>- Reload plugin config</gray>"
-  - " <gray>• <click:suggest_command:'/coord'><white>/coord</white></click> <gray>- Show this help menu</gray>"
   - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
 
 randomSelect:
@@ -71,6 +73,11 @@ randomSelect:
 
 leak:
   exposed: "<red>Your location has been leaked!"
+
+shareCoord:
+  - "<cyan>%player_name% Shared their position"
+  - "➤ <cyan>X=%coordleak_posx% | Y=%coordleak_posy% | Z=%coordleak_posz%"
+  - "<white>Dimension: <cyan>%coordleak_dimension%"
 ```
 
 Dependencies
@@ -83,11 +90,12 @@ Dependencies
 Placeholders
 ------------
 
-| Placeholder             | Description                          |
-|------------------------|--------------------------------------|
-| %coordleak_posx%       | Player's X coordinate                |
-| %coordleak_posz%       | Player's Z coordinate                |
-| %coordleak_dimension%  | Player's current world/dimension     |
+| Placeholder           | Description                      |
+|-----------------------|----------------------------------|
+| %coordleak_posx%      | Player's X coordinate            |
+| %coordleak_posy%      | Player's Y coordinate            |
+| %coordleak_posz%      | Player's Z coordinate            |
+| %coordleak_dimension% | Player's current world/dimension |
 
 Notes
 -----
