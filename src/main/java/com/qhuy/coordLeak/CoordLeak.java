@@ -26,6 +26,8 @@ public final class CoordLeak extends JavaPlugin {
     private CoordLeakExpansion PAPI;
     private File file;
     private long cooldown;
+    private boolean PAPIEnabled;
+    private boolean ECONEnabled;
 
 
     public static CoordLeak getInstance() {
@@ -40,21 +42,24 @@ public final class CoordLeak extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        info("Enabling");
-        instance = this;
 
-        cooldown = getConfig().getLong("clean-interval", 300L);
+        cooldown = getConfig().getLong("settings.clean-interval", 300L);
+
+        instance = this;
         this.adventure = BukkitAudiences.create(this);
         this.messageManager = new MessageManager(this);
         this.cooldownManager = new CooldownManager();
 
-        PAPI = new CoordLeakExpansion();
-        PAPI.register();
+        if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            PAPI = new CoordLeakExpansion();
+            PAPIEnabled = PAPI.register();
+        }
 
         if (!setupEconomy()) {
             getLogger().warning("Could not setup Economy, disabling plugin...");
             Bukkit.getPluginManager().disablePlugin(this);
         }
+        ECONEnabled = true;
 
         Bukkit.getScheduler().runTaskTimer(this, () -> {
             cooldownManager.cleanup();
@@ -65,9 +70,11 @@ public final class CoordLeak extends JavaPlugin {
                 new CoordCommand(
                         this,
                         PAPI,
-                        cooldownManager
+                        cooldownManager,
+                        PAPIEnabled
                 )
         );
+        info("Enabling");
     }
 
     @Override
@@ -95,6 +102,10 @@ public final class CoordLeak extends JavaPlugin {
         text.append("&8| &9Contact:\n");
         text.append("&8|   &9Email: &bmarrineer@gmail.com\n");
         text.append("&8|   &9Discord: &b@marrineer\n");
+        text.append("&8|\n");
+        text.append("&8| &9Status:\n");
+        text.append("&8|   &9Vault: \n").append(ECONEnabled ? "&aEnabled\n" : "&cDisabled\n");
+        text.append("&8|   &9PlaceholderAPI: ").append(PAPIEnabled ? "&aEnabled\n" : "&cDisabled\n");
         text.append("&8|\n");
         text.append("&8[]=========================================[]\n");
 
@@ -132,5 +143,9 @@ public final class CoordLeak extends JavaPlugin {
 
     public Audience audience(Player player) {
         return adventure.player(player);
+    }
+
+    public boolean hasPAPI() {
+        return PAPIEnabled;
     }
 }

@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 public class Message {
     private static final String PREFIX = CoordLeak.getInstance().getConfig().getString("prefix", "");
+    private static final boolean PAPIEnabled = CoordLeak.getInstance().hasPAPI();
 
     public static String get(String placeholder) {
         return CoordLeak.getInstance().getMessage().getString(
@@ -19,30 +20,31 @@ public class Message {
     }
 
     public static void sendToSender(String text, CommandSender sender) {
+        String message = String.format("%s %s", PREFIX, text);
         if (sender instanceof Player player) {
-            CoordLeak.getInstance().audience(player).sendMessage(
-                    MiniMessage.miniMessage().deserialize(
-                            PlaceholderAPI.setPlaceholders(
-                                    player,
-                                    String.format("%s %s", PREFIX, text)
-                            )
-                    )
+            if(PAPIEnabled) {
+                message = PlaceholderAPI.setPlaceholders(player, message);
+            }
+            CoordLeak.getInstance().audience(sender).sendMessage(
+                    MiniMessage.miniMessage().deserialize(message)
             );
         } else {
             CoordLeak.getInstance().audience(sender).sendMessage(
-                    MiniMessage.miniMessage().deserialize(PREFIX + text)
+                    MiniMessage.miniMessage().deserialize(message)
             );
         }
     }
 
     public static void sendToPlayer(String text, Player player) {
+        String message = String.format("%s %s", PREFIX, text);
+        if(PAPIEnabled) {
+            message = PlaceholderAPI.setPlaceholders(
+                    player,
+                    message
+            );
+        }
         CoordLeak.getInstance().audience(player).sendMessage(
-                MiniMessage.miniMessage().deserialize(
-                        PlaceholderAPI.setPlaceholders(
-                                player,
-                                String.format("%s %s", PREFIX, text)
-                        )
-                )
+                MiniMessage.miniMessage().deserialize(message)
         );
     }
 }

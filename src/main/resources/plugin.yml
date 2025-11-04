@@ -5,8 +5,8 @@ api-version: '1.21'
 load: POSTWORLD
 authors: [ qhuy ]
 description: Allows players to buy usages to leak the coordinates of random online players.
-depend: [Vault, PlaceholderAPI]
-softdepend: [Essentials]
+depend: [Vault]
+softdepend: [Essentials, PlaceholderAPI]
 permissions:
   coordleak.admin:
     default: op
