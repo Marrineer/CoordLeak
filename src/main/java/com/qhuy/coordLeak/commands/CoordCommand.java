@@ -42,7 +42,7 @@ public class CoordCommand implements CommandExecutor, TabCompleter {
         isPlayer = sender instanceof Player;
         Player player = isPlayer ? (Player) sender : null;
 
-        boolean isAdmin = isPlayer && player.isOp() || player.hasPermission("coordleak.admin");
+        boolean isAdmin = isPlayer && (player.isOp() || player.hasPermission("coordleak.admin"));
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             String subCommand = args.length > 0 ? args[0].toLowerCase() : "";
