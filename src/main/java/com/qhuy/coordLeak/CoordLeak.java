@@ -104,8 +104,8 @@ public final class CoordLeak extends JavaPlugin {
         text.append("&8|   &9Discord: &b@marrineer\n");
         text.append("&8|\n");
         text.append("&8| &9Status:\n");
-        text.append("&8|   &9Vault: \n").append(ECONEnabled ? "&aEnabled\n" : "&cDisabled\n");
-        text.append("&8|   &9PlaceholderAPI: ").append(PAPIEnabled ? "&aEnabled\n" : "&cDisabled\n");
+        text.append("&8|   &9Vault: ").append(ECONEnabled ? "&bEnabled\n" : "&cDisabled\n");
+        text.append("&8|   &9PlaceholderAPI: ").append(PAPIEnabled ? "&bEnabled\n" : "&cDisabled\n");
         text.append("&8|\n");
         text.append("&8[]=========================================[]\n");
 

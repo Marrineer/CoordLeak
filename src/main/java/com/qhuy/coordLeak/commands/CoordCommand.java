@@ -25,6 +25,7 @@ public class CoordCommand implements CommandExecutor, TabCompleter {
     private double price;
     private long cooldown;
     private final boolean PAPIEnabled;
+    private boolean isPlayer = false;
 
     public CoordCommand(CoordLeak plugin, CoordLeakExpansion PAPI, CooldownManager CM, boolean PAPIEnabled) {
         this.plugin = plugin;
@@ -38,19 +39,20 @@ public class CoordCommand implements CommandExecutor, TabCompleter {
         price = plugin.getConfig().getDouble("price", 500);
         cooldown = plugin.getConfig().getLong("settings.cooldown-per-usage", 300);
 
-        if (!(sender instanceof Player player)) {
-            Message.sendToSender(Message.get("onlyPlayer"), sender);
-            return true;
-        }
+        isPlayer = sender instanceof Player;
+        Player player = isPlayer ? (Player) sender : null;
 
-        boolean isAdmin = player.isOp() || player.hasPermission("coordleak.admin");
+        boolean isAdmin = isPlayer && player.isOp() || player.hasPermission("coordleak.admin");
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             String subCommand = args.length > 0 ? args[0].toLowerCase() : "";
 
             switch (subCommand) {
                 case "use":
-                    List<String> messages = CoordLeak.getInstance().getConfig().getStringList("randomSelect");
+                    if(!isPlayer) {
+                        Message.sendToSender(Message.get("onlyPlayer"), sender); return;
+                    }
+                    List<String> messages = CoordLeak.getInstance().getMessage().getStringList("randomSelect");
                     List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
                     players.remove(player);
                     if (players.isEmpty()) {
@@ -111,7 +113,7 @@ public class CoordCommand implements CommandExecutor, TabCompleter {
                     break;
 
                 default:
-                    List<String> help = CoordLeak.getInstance().getConfig().getStringList("help");
+                    List<String> help = CoordLeak.getInstance().getMessage().getStringList("help");
                     if (help.isEmpty()) {
                         String msg = Message.get("configError");
                         CoordLeak.getInstance().audience(sender).sendMessage(
