@@ -17,7 +17,6 @@ prefix: "<i><gradient:#FFFFFF:#29E7D7>[ Coord ]</gradient></i>"
 price: 1000
 
 settings:
-  # Boolean
-  enable-auto-save: true
-  # Second
-  auto-save-interval: 600
+  cooldown-per-usage: 300 # SECOND
+
+  clean-interval: 300 # SECOND

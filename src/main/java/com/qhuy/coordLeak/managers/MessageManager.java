@@ -3,7 +3,6 @@ package com.qhuy.coordLeak.managers;
 import com.qhuy.coordLeak.CoordLeak;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.InputStreamReader;
@@ -17,11 +16,12 @@ public class MessageManager {
     public MessageManager(CoordLeak plugin) {
         this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), "messages.yml");
-        if(!file.exists()) {
+        if (!file.exists()) {
             plugin.saveResource("messages.yml", false);
         }
         reloadMessage();
     }
+
     public void reloadMessage() {
         this.messages = YamlConfiguration.loadConfiguration(file);
         FileConfiguration defaultMessage = YamlConfiguration.loadConfiguration(
@@ -29,5 +29,9 @@ public class MessageManager {
         );
         messages.setDefaults(defaultMessage);
         messages.options().copyDefaults(true);
+    }
+
+    public FileConfiguration getMessages() {
+        return messages;
     }
 }

@@ -13,19 +13,7 @@ permissions:
   coordleak.use:
     default: true
 commands:
-  buyusage:
-    usage: /buyusage
-    description: Buy usages for the /coord command.
-    permission: coordleak.use
-  setusage:
-    usage: /setusage <player> <amount>
-    description: Set usage count.
-    permission: coordleak.admin
   coord:
     usage: /coord
     description: Leak the coordinates of a random online player.
     permission: coordleak.use
-  creload:
-    usage: /creload
-    description: Reload the plugin's configuration.
-    permission: coordleak.admin

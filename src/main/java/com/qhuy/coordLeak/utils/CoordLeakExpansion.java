@@ -1,7 +1,6 @@
 package com.qhuy.coordLeak.utils;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +22,7 @@ public class CoordLeakExpansion extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player player, @NotNull String identifier) {
-        if(player == null) return "";
+        if (player == null) return "";
         return switch (identifier.toLowerCase()) {
             case "dimension" -> switch (player.getWorld().getEnvironment()) {
                 case NORMAL -> "Overworld";
