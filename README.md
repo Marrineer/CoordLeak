@@ -16,12 +16,10 @@ Features
 Commands & Permissions
 ----------------------
 
-| Command                        | Description                            | Permission        | Default     |
-|-------------------------------|----------------------------------------|-------------------|-------------|
-| /coord                        | Leak coordinates of a random player    | coordleak.use     | ✅ All players |
-| /buyusage                     | Buy one usage of /coord                | coordleak.use     | ✅ All players |
-| /setusage <player> <amount>   | Set usage count manually               | coordleak.admin   | ❌ OP only    |
-| /creload                      | Reload config and messages             | coordleak.admin   | ❌ OP only    |
+| Command       | Description                            | Permission        | Default     |
+|---------------|----------------------------------------|-------------------|-------------|
+| /coord use    | Leak coordinates of a random player    | coordleak.use     | ✅ All players |
+| /coord reload | Reload config and messages             | coordleak.admin   | ❌ OP only    |
 
 Note: `/coord` requires the player to have at least one usage.
 
@@ -30,25 +28,14 @@ Configuration
 
 ### config.yml
 ```yaml
-database:
-  # DB Type ( SQLITE / MYSQL )
-  type: SQLITE
-  # SQLITE
-  sqlite-file: data.db
-  # MYSQL
-  host: localhost
-  port: 3306
-  name: coordleak_db
-  user: root
-  password: password
-
 prefix: "<i><gradient:#FFFFFF:#29E7D7>[ Coord ]</gradient></i>"
 
 price: 1000
 
 settings:
-  enable-auto-save: true
-  auto-save-interval: 600
+  cooldown-per-usage: 300 # SECOND
+
+  clean-interval: 60 # SECOND
 ```
 
 ### messages.yml
@@ -67,16 +54,16 @@ noOneIsOnline: "<red>No players are currently online.</red>"
 setSuccess: "<green>Set usage count successfully</green>"
 onlyPlayer: "Only player can use this command"
 
-helpFallback:
-  setusage: "<yellow>Usage: /setusage <player> <integer>"
-  buyusage: "<yellow>Usage: /buyusage <integer>"
-  coordusage: "<yellow>Usage: /coord"
+help:
+  - "<white> /coord"
+  - "<white> /coord reload"
+  - "<white> /coord use"
 
 randomSelect:
-  message: "<white>A random player has been selected!"
-  target: "<white>Target: <cyan>%player_name%"
-  coord: "<white>Coord: <cyan>X=%coordleak_posx%, Z=%coordleak_posz%"
-  dimension: "<white>Dimension: <cyan>%coordleak_dimension%"
+  - "<white>A random player has been selected!"
+  - "<white>Target: <cyan>%player_name%"
+  - "<white>Coord: <cyan>X=%coordleak_posx%, Z=%coordleak_posz%"
+  - "<white>Dimension: <cyan>%coordleak_dimension%"
 
 leak:
   exposed: "<red>Your location has been leaked!"
