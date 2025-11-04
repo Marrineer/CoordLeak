@@ -15,11 +15,11 @@ cooldownMessage: "<red>You are on cooldown. Please wait before using this comman
 
 help:
   - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
-  - " <white><gradient:#29E7D7:#FFFFFF>CoordLeak Commands</gradient>"
+  - "<white><gradient:#29E7D7:#FFFFFF>CoordLeak Commands</gradient>"
   - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
-  - " <gray>• <click:suggest_command:'/coord leak'><white>/coord use</white></click> <gray>- Leak random player's location</gray>"
-  - " <gray>• <click:suggest_command:'/coord share <Player> <Text>'><white>/coord reload</white></click> <gray>- Share your location</gray>"
-  - " <gray>• <click:suggest_command:'/coord reload'><white>/coord reload</white></click> <gray>- Reload plugin config</gray>"
+  - "<gray>• <click:suggest_command:'/coord leak'><white>/coord leak</white></click> <gray>- Leak random player's location</gray>"
+  - "<gray>• <click:suggest_command:'/coord share <player> <text>'><white>/coord share</white></click> <gray>- Share your location</gray>"
+  - "<gray>• <click:suggest_command:'/coord reload'><white>/coord reload</white></click> <gray>- Reload plugin config</gray>"
   - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
 
 randomSelect:
