@@ -31,6 +31,7 @@ public class CoordLeakExpansion extends PlaceholderExpansion {
                 default -> player.getWorld().getName();
             };
             case "posx" -> String.valueOf(player.getLocation().getBlockX());
+            case "posy" -> String.valueOf(player.getLocation().getBlockY());
             case "posz" -> String.valueOf(player.getLocation().getBlockZ());
             default -> null;
         };

@@ -16,8 +16,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public class CoordCommand implements CommandExecutor, TabCompleter {
     private final CoordLeak plugin;
@@ -49,12 +51,11 @@ public class CoordCommand implements CommandExecutor, TabCompleter {
             String subCommand = args.length > 0 ? args[0].toLowerCase() : "";
 
             switch (subCommand) {
-                case "use":
+                case "leak":
                     if (!isPlayer) {
                         Message.sendToSender(Message.get("onlyPlayer"), sender);
                         return;
                     }
-                    List<String> messages = CoordLeak.getInstance().getMessage().getStringList("randomSelect");
                     List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
                     players.remove(player);
                     if (players.isEmpty()) {
@@ -77,28 +78,50 @@ public class CoordCommand implements CommandExecutor, TabCompleter {
                             plugin.getEconomy().withdrawPlayer(player, price);
                             CM.setCooldown(player, cooldown);
                         }
-
-                        if (messages.isEmpty()) {
-                            String msg = Message.get("configError");
-                            CoordLeak.getInstance().audience(sender).sendMessage(
-                                    MiniMessage.miniMessage().deserialize(
-                                            PAPIEnabled ? PlaceholderAPI.setPlaceholders(player, msg) : msg
-                                    )
-                            );
-                            return;
-                        }
-
-                        for (String msg : messages) {
-                            CoordLeak.getInstance().audience(sender).sendMessage(
-                                    MiniMessage.miniMessage().deserialize(
-                                            PAPIEnabled ? PlaceholderAPI.setPlaceholders(player, msg) : msg
-                                    )
-                            );
-                        }
+                        sendStringList("randomSelect", sender, target);
 
                         Message.sendToPlayer(Message.get("leak.exposed"), target);
                     });
                     break;
+
+                case "share":
+                    if (!isPlayer) {
+                        Message.sendToSender(Message.get("onlyPlayer"), sender);
+                        return;
+                    }
+                    if (args.length < 2) {
+                        sendStringList("help", sender, player);
+                        return;
+                    }
+                    Player targetShare = Bukkit.getPlayer(args[1]);
+                    if (targetShare == null) {
+                        Message.sendToSender(Message.get("invalidPlayer"), sender);
+                        return;
+                    }
+                    String customText = null;
+                    if (args.length > 2) {
+                        customText = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+                    }
+                    List<String> strList = CoordLeak.getInstance().getMessage().getStringList("shareCord");
+                    if (customText != null) {
+                        strList.set(1, customText);
+                    }
+                    if (strList.isEmpty()) {
+                        String msg = Message.get("configError");
+                        CoordLeak.getInstance().audience(targetShare).sendMessage(
+                                MiniMessage.miniMessage().deserialize(
+                                        PAPIEnabled ? PlaceholderAPI.setPlaceholders(player, msg) : msg
+                                )
+                        );
+                        return;
+                    }
+                    for (String msg : strList) {
+                        CoordLeak.getInstance().audience(targetShare).sendMessage(
+                                MiniMessage.miniMessage().deserialize(
+                                        PAPIEnabled ? PlaceholderAPI.setPlaceholders(player, msg) : msg
+                                )
+                        );
+                    }
 
                 case "reload":
                     Bukkit.getScheduler().runTask(plugin, () -> {
@@ -116,23 +139,7 @@ public class CoordCommand implements CommandExecutor, TabCompleter {
                     break;
 
                 default:
-                    List<String> help = CoordLeak.getInstance().getMessage().getStringList("help");
-                    if (help.isEmpty()) {
-                        String msg = Message.get("configError");
-                        CoordLeak.getInstance().audience(sender).sendMessage(
-                                MiniMessage.miniMessage().deserialize(
-                                        PAPIEnabled ? PlaceholderAPI.setPlaceholders(player, msg) : msg
-                                )
-                        );
-                        return;
-                    }
-                    for (String msg : help) {
-                        CoordLeak.getInstance().audience(sender).sendMessage(
-                                MiniMessage.miniMessage().deserialize(
-                                        PAPIEnabled ? PlaceholderAPI.setPlaceholders(player, msg) : msg
-                                )
-                        );
-                    }
+                    sendStringList("help", sender, player);
                     break;
             }
         });
@@ -145,17 +152,48 @@ public class CoordCommand implements CommandExecutor, TabCompleter {
         List<String> completions = new ArrayList<>();
 
         if (args.length == 1) {
-            String partial = args[0].toLowerCase();
-            List<String> subCommands = new ArrayList<>(List.of("use"));
+            List<String> subCommands = new ArrayList<>(List.of("leak", "share"));
             if (sender.hasPermission("coordleak.admin")) {
                 subCommands.add("reload");
             }
-            for (String sub : subCommands) {
-                if (sub.startsWith(partial)) {
-                    completions.add(sub);
-                }
-            }
+
+            String partial = args[0].toLowerCase();
+            completions.addAll(
+                    subCommands.stream()
+                            .filter(sub -> sub.startsWith(partial))
+                            .toList()
+            );
         }
+        else if (args.length == 2 && args[0].equalsIgnoreCase("share")) {
+            String partial = args[1].toLowerCase();
+            completions.addAll(
+                    Bukkit.getOnlinePlayers().stream()
+                            .map(Player::getName)
+                            .filter(name -> name.toLowerCase().startsWith(partial))
+                            .toList()
+            );
+        }
+
         return completions;
+    }
+
+    public void sendStringList(String alias, CommandSender sender, Player target) {
+        List<String> StrList = CoordLeak.getInstance().getMessage().getStringList(alias);
+        if (StrList.isEmpty()) {
+            String msg = Message.get("configError");
+            CoordLeak.getInstance().audience(sender).sendMessage(
+                    MiniMessage.miniMessage().deserialize(
+                            PAPIEnabled ? PlaceholderAPI.setPlaceholders(target, msg) : msg
+                    )
+            );
+            return;
+        }
+        for (String msg : StrList) {
+            CoordLeak.getInstance().audience(sender).sendMessage(
+                    MiniMessage.miniMessage().deserialize(
+                            PAPIEnabled ? PlaceholderAPI.setPlaceholders(target, msg) : msg
+                    )
+            );
+        }
     }
 }

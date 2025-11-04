@@ -14,11 +14,11 @@ cooldownMessage: "<red>You are on cooldown. Please wait before using this comman
 
 help:
   - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
-  - " <white>⛏ <gradient:#29E7D7:#FFFFFF>CoordLeak Commands</gradient>"
+  - " <white><gradient:#29E7D7:#FFFFFF>CoordLeak Commands</gradient>"
   - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
-  - " <gray>• <click:suggest_command:'/coord use'><white>/coord use</white></click> <gray>- Leak random player's location</gray>"
+  - " <gray>• <click:suggest_command:'/coord leak'><white>/coord use</white></click> <gray>- Leak random player's location</gray>"
+  - " <gray>• <click:suggest_command:'/coord share <Player> <Text>'><white>/coord reload</white></click> <gray>- Share your location</gray>"
   - " <gray>• <click:suggest_command:'/coord reload'><white>/coord reload</white></click> <gray>- Reload plugin config</gray>"
-  - " <gray>• <click:suggest_command:'/coord'><white>/coord</white></click> <gray>- Show this help menu</gray>"
   - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
 
 randomSelect:
@@ -29,3 +29,8 @@ randomSelect:
 
 leak:
   exposed: "<red>Your location has been leaked!"
+
+shareCoord:
+  - "<cyan>%player_name% Shared their position"
+  - "➤ <cyan>X=%coordleak_posx% | Y=%coordleak_posy% | Z=%coordleak_posz%"
+  - "<white>Dimension: <cyan>%coordleak_dimension%"

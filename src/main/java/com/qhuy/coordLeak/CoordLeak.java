@@ -7,9 +7,9 @@ import com.qhuy.coordLeak.utils.CoordLeakExpansion;
 import com.qhuy.coordLeak.utils.InfoStatus;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -93,26 +93,28 @@ public final class CoordLeak extends JavaPlugin {
 
     public void info(InfoStatus status) {
         StringBuilder text = new StringBuilder("\n\n");
-        text.append("&8[]===========[").append(status.getMessage()).append(" &cCoordLeak&8]===========[]\n");
-        text.append("&8|\n");
-        text.append("&8| &cInformation:\n");
-        text.append("&8|\n");
-        text.append("&8|   &9Name: &bCoordLeak\n");
-        text.append("&8|   &9Author: ").append(getDescription().getAuthors()).append("\n");
-        text.append("&8|\n");
-        text.append("&8| &9Contact:\n");
-        text.append("&8|   &9Email: &bmarrineer@gmail.com\n");
-        text.append("&8|   &9Discord: &b@marrineer\n");
-        text.append("&8|\n");
+        text.append("<gray>[]===========[<reset>").append(status.getMessage()).append(" CoordLeak<reset><gray>]===========[]\n");
+        text.append("<gray>|<reset>\n");
+        text.append("<gray>|<reset> <b><gradient:#FFFFFF:#C81EEC>Information</gradient></b><reset>:\n");
+        text.append("<gray>|<reset>\n");
+        text.append("<gray>|<reset>   <gradient:#FFFFFF:#1EA1EC>Name</gradient><reset>: <white>CoordLeak\n");
+        text.append("<gray>|<reset>   <gradient:#FFFFFF:#1EA1EC>Author</gradient><reset>: <white>").append(getDescription().getAuthors()).append("\n");
+        text.append("<gray>|<reset>\n");
+        text.append("<gray>|<reset> <b><gradient:#FFFFFF:#C81EEC>Contact</gradient></b><reset>:\n");
+        text.append("<gray>|<reset>   <gradient:#FFFFFF:#1EA1EC>Email</gradient><reset>: <white>marrineer@gmail.com\n");
+        text.append("<gray>|<reset>   <gradient:#FFFFFF:#1EA1EC>Discord</gradient><reset>: <white>@marrineer\n");
+        text.append("<gray>|<reset>\n");
         if (status.getStatus()) {
-            text.append("&8| &9Status:\n");
-            text.append("&8|   &9Vault: ").append(ECONEnabled ? "&bEnabled\n" : "&cDisabled\n");
-            text.append("&8|   &9PlaceholderAPI: ").append(PAPIEnabled ? "&bEnabled\n" : "&cDisabled\n");
-            text.append("&8|\n");
+            text.append("<gray>|<reset> <b><gradient:#FFFFFF:#C81EEC>Status</gradient></b><reset>:\n");
+            text.append("<gray>|<reset>   <gradient:#FFFFFF:#1EA1EC>Vault</gradient><reset>: ").append(ECONEnabled ? "<green>Enabled\n" : "<red>Disabled\n");
+            text.append("<gray>|<reset>   <gradient:#FFFFFF:#1EA1EC>PlaceholderAPI</gradient><reset>: ").append(PAPIEnabled ? "<green>Enabled\n" : "<red>Disabled\n");
+            text.append("<gray>|<reset>\n");
         }
-        text.append("&8[]=========================================[]\n");
+        text.append("<dark_gray>[]=========================================[]</dark_gray>\n");
 
-        Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', text.toString()));
+        Bukkit.getConsoleSender().sendMessage(
+                MiniMessage.miniMessage().deserialize(text.toString())
+        );
     }
 
     private boolean setupEconomy() {

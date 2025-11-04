@@ -1,14 +1,14 @@
 package com.qhuy.coordLeak.utils;
 
 public enum InfoStatus {
-    START("Starting") {
+    START("<green>Starting") {
         @Override
         public boolean getStatus() {
             return true;
         }
     },
-    STOP("Stopping"),
-    RESTART("Restarting");
+    STOP("<red>Stopping"),
+    RESTART("<yellow>Restarting");
 
     private final String message;
 
