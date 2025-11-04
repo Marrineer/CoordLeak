@@ -27,7 +27,7 @@ public class CooldownManager implements Listener {
     }
 
     public boolean usable(Player player, long seconds) {
-        if(isOnCooldown(player)) {
+        if (isOnCooldown(player)) {
             return false;
         } else {
             setCooldown(player, seconds);

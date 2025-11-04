@@ -3,6 +3,7 @@ package com.qhuy.coordLeak.commands;
 import com.qhuy.coordLeak.CoordLeak;
 import com.qhuy.coordLeak.managers.CooldownManager;
 import com.qhuy.coordLeak.utils.CoordLeakExpansion;
+import com.qhuy.coordLeak.utils.InfoStatus;
 import com.qhuy.coordLeak.utils.Message;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -22,9 +23,9 @@ public class CoordCommand implements CommandExecutor, TabCompleter {
     private final CoordLeak plugin;
     private final CoordLeakExpansion PAPI;
     private final CooldownManager CM;
+    private final boolean PAPIEnabled;
     private double price;
     private long cooldown;
-    private final boolean PAPIEnabled;
     private boolean isPlayer = false;
 
     public CoordCommand(CoordLeak plugin, CoordLeakExpansion PAPI, CooldownManager CM, boolean PAPIEnabled) {
@@ -49,8 +50,9 @@ public class CoordCommand implements CommandExecutor, TabCompleter {
 
             switch (subCommand) {
                 case "use":
-                    if(!isPlayer) {
-                        Message.sendToSender(Message.get("onlyPlayer"), sender); return;
+                    if (!isPlayer) {
+                        Message.sendToSender(Message.get("onlyPlayer"), sender);
+                        return;
                     }
                     List<String> messages = CoordLeak.getInstance().getMessage().getStringList("randomSelect");
                     List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
@@ -109,6 +111,7 @@ public class CoordCommand implements CommandExecutor, TabCompleter {
                         PAPI.unregister();
                         PAPI.register();
                         Message.sendToSender(Message.get("configReloaded"), sender);
+                        CoordLeak.getInstance().info(InfoStatus.RESTART);
                     });
                     break;
 

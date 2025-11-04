@@ -4,6 +4,7 @@ import com.qhuy.coordLeak.commands.CoordCommand;
 import com.qhuy.coordLeak.managers.CooldownManager;
 import com.qhuy.coordLeak.managers.MessageManager;
 import com.qhuy.coordLeak.utils.CoordLeakExpansion;
+import com.qhuy.coordLeak.utils.InfoStatus;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.milkbowl.vault.economy.Economy;
@@ -50,7 +51,7 @@ public final class CoordLeak extends JavaPlugin {
         this.messageManager = new MessageManager(this);
         this.cooldownManager = new CooldownManager();
 
-        if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             PAPI = new CoordLeakExpansion();
             PAPIEnabled = PAPI.register();
         }
@@ -74,12 +75,12 @@ public final class CoordLeak extends JavaPlugin {
                         PAPIEnabled
                 )
         );
-        info("Enabling");
+        info(InfoStatus.START);
     }
 
     @Override
     public void onDisable() {
-        info("Disabling");
+        info(InfoStatus.STOP);
         if (PAPI != null) {
             PAPI.unregister();
         }
@@ -90,9 +91,9 @@ public final class CoordLeak extends JavaPlugin {
         saveConfig();
     }
 
-    private void info(String msg) {
+    public void info(InfoStatus status) {
         StringBuilder text = new StringBuilder("\n\n");
-        text.append("&8[]===========[").append(msg).append(" &cCoordLeak&8]===========[]\n");
+        text.append("&8[]===========[").append(status.getMessage()).append(" &cCoordLeak&8]===========[]\n");
         text.append("&8|\n");
         text.append("&8| &cInformation:\n");
         text.append("&8|\n");
@@ -103,10 +104,12 @@ public final class CoordLeak extends JavaPlugin {
         text.append("&8|   &9Email: &bmarrineer@gmail.com\n");
         text.append("&8|   &9Discord: &b@marrineer\n");
         text.append("&8|\n");
-        text.append("&8| &9Status:\n");
-        text.append("&8|   &9Vault: ").append(ECONEnabled ? "&bEnabled\n" : "&cDisabled\n");
-        text.append("&8|   &9PlaceholderAPI: ").append(PAPIEnabled ? "&bEnabled\n" : "&cDisabled\n");
-        text.append("&8|\n");
+        if (status.getStatus()) {
+            text.append("&8| &9Status:\n");
+            text.append("&8|   &9Vault: ").append(ECONEnabled ? "&bEnabled\n" : "&cDisabled\n");
+            text.append("&8|   &9PlaceholderAPI: ").append(PAPIEnabled ? "&bEnabled\n" : "&cDisabled\n");
+            text.append("&8|\n");
+        }
         text.append("&8[]=========================================[]\n");
 
         Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', text.toString()));

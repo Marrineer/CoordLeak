@@ -4,7 +4,6 @@ import com.qhuy.coordLeak.CoordLeak;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 public class Message {
@@ -22,7 +21,7 @@ public class Message {
     public static void sendToSender(String text, CommandSender sender) {
         String message = String.format("%s %s", PREFIX, text);
         if (sender instanceof Player player) {
-            if(PAPIEnabled) {
+            if (PAPIEnabled) {
                 message = PlaceholderAPI.setPlaceholders(player, message);
             }
             CoordLeak.getInstance().audience(sender).sendMessage(
@@ -37,7 +36,7 @@ public class Message {
 
     public static void sendToPlayer(String text, Player player) {
         String message = String.format("%s %s", PREFIX, text);
-        if(PAPIEnabled) {
+        if (PAPIEnabled) {
             message = PlaceholderAPI.setPlaceholders(
                     player,
                     message
