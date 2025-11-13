@@ -8,17 +8,24 @@ description: Allows players to buy usages to leak the coordinates of random onli
 depend: [Vault]
 softdepend: [Essentials, PlaceholderAPI]
 libraries:
-  - net.dv8tion:JDA:6.1.1
   - net.kyori:adventure-platform-bukkit:4.4.1
   - net.kyori:adventure-api:4.24.0
   - net.kyori:adventure-text-minimessage:4.24.0
 permissions:
   coordleak.admin:
     default: op
-  coordleak.use:
+  coordleak.leak:
     default: true
+  coordleak.share:
+    default: true
+  coordleak.setprice:
+    default: op
 commands:
   coord:
     usage: /coord
-    description: Leak the coordinates of a random online player.
-    permission: coordleak.use
+    description: Main command for CoordLeak plugin.
+    permission: coordleak.leak
+  setprice:
+    usage: /setprice <amount>
+    description: Set the price for leaking coordinates.
+    permission: coordleak.setprice

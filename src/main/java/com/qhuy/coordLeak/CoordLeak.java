@@ -1,121 +1,149 @@
 package com.qhuy.coordLeak;
 
 import com.qhuy.coordLeak.commands.CoordCommand;
+import com.qhuy.coordLeak.commands.SetPriceCommand;
+import com.qhuy.coordLeak.managers.ConfigManager;
 import com.qhuy.coordLeak.managers.CooldownManager;
 import com.qhuy.coordLeak.managers.MessageManager;
 import com.qhuy.coordLeak.utils.CoordLeakExpansion;
 import com.qhuy.coordLeak.utils.InfoStatus;
+import com.qhuy.coordLeak.utils.MessageUtil;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.File;
+import org.bukkit.scheduler.BukkitTask;
 
 public final class CoordLeak extends JavaPlugin {
-    private static CoordLeak instance;
     private BukkitAudiences adventure;
     private Economy econ;
     private MessageManager messageManager;
     private CooldownManager cooldownManager;
+    private ConfigManager configManager;
+    private MessageUtil messageUtil;
     private CoordLeakExpansion PAPI;
-    private File file;
-    private long cooldown;
     private boolean PAPIEnabled;
-    private boolean ECONEnabled;
-
-
-    public static CoordLeak getInstance() {
-        return instance;
-    }
+    private BukkitTask cleanupTask;
 
     public BukkitAudiences adventure() {
+        if (this.adventure == null) {
+            throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
+        }
         return this.adventure;
     }
-
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
 
-        cooldown = getConfig().getLong("settings.clean-interval", 300L);
-
-        instance = this;
+        // Initialize managers
         this.adventure = BukkitAudiences.create(this);
+        this.configManager = new ConfigManager(this);
         this.messageManager = new MessageManager(this);
-        this.cooldownManager = new CooldownManager();
+        this.cooldownManager = new CooldownManager(this);
+        this.messageUtil = new MessageUtil(this);
 
+        // Check for PlaceholderAPI
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             PAPI = new CoordLeakExpansion();
             PAPIEnabled = PAPI.register();
+            getLogger().info("PlaceholderAPI found and hooked.");
+        } else {
+            getLogger().info("PlaceholderAPI not found, skipping hook.");
         }
 
+        // Check for Vault
         if (!setupEconomy()) {
-            getLogger().warning("Could not setup Economy, disabling plugin...");
+            getLogger().severe("Vault not found or no economy plugin, disabling plugin...");
             Bukkit.getPluginManager().disablePlugin(this);
+            return;
         }
-        ECONEnabled = true;
+        getLogger().info("Vault found and hooked.");
 
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
-            cooldownManager.cleanup();
-        }, cooldown * 20, cooldown * 20);
+        // Start cooldown cleanup task
+        long cleanupInterval = 20L * 300; // 5 minutes
+        this.cleanupTask = Bukkit.getScheduler().runTaskTimer(this, cooldownManager::cleanup, cleanupInterval, cleanupInterval);
 
-        // Register command
+        // Register commands
         Bukkit.getPluginCommand("coord").setExecutor(
-                new CoordCommand(
-                        this,
-                        PAPI,
-                        cooldownManager,
-                        PAPIEnabled
-                )
+                new CoordCommand(this)
         );
+        Bukkit.getPluginCommand("setprice").setExecutor(
+                new SetPriceCommand(this)
+        );
+
         info(InfoStatus.START);
     }
 
     @Override
     public void onDisable() {
         info(InfoStatus.STOP);
-        if (PAPI != null) {
+
+        if (PAPI != null && PAPI.isRegistered()) {
             PAPI.unregister();
         }
+
         if (this.adventure != null) {
             this.adventure.close();
             this.adventure = null;
         }
+
+        if (this.cleanupTask != null) {
+            this.cleanupTask.cancel();
+        }
         saveConfig();
     }
 
+    public void reloadManagers() {
+        configManager.loadConfig();
+        messageManager.reloadMessage();
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            if (PAPI != null) {
+                PAPI.unregister();
+            }
+            PAPI = new CoordLeakExpansion();
+            PAPIEnabled = PAPI.register();
+        } else {
+            PAPIEnabled = false;
+            if (PAPI != null) {
+                PAPI.unregister(); // Ensure it's unregistered if PAPI was disabled
+                PAPI = null;
+            }
+        }
+    }
+
+
     public void info(InfoStatus status) {
+        boolean isEnabling = status.getStatus();
+        String statusMessage = isEnabling ? "<green>Enabling" : "<red>Disabling";
+
         StringBuilder text = new StringBuilder("\n\n");
-        text.append("<gray>[]===========[<reset>").append(status.getMessage()).append(" CoordLeak<reset><gray>]===========[]\n");
+        text.append("<gray>[]===========[ <reset>").append(statusMessage).append(" CoordLeak<reset><gray>]===========[]\n");
         text.append("<gray>|<reset>\n");
         text.append("<gray>|<reset> <b><gradient:#FFFFFF:#C81EEC>Information</gradient></b><reset>:\n");
         text.append("<gray>|<reset>\n");
-        text.append("<gray>|<reset>   <gradient:#FFFFFF:#1EA1EC>Name</gradient><reset>: <white>CoordLeak\n");
-        text.append("<gray>|<reset>   <gradient:#FFFFFF:#1EA1EC>Author</gradient><reset>: <white>").append(getDescription().getAuthors()).append("\n");
+        text.append("<gray>|<reset>   <gradient:#FFFFFF:#1EA1EC>Name</gradient><reset>: <white>").append(getDescription().getName()).append("\n");
+        text.append("<gray>|<reset>   <gradient:#FFFFFF:#1EA1EC>Version</gradient><reset>: <white>").append(getDescription().getVersion()).append("\n");
+        text.append("<gray>|<reset>   <gradient:#FFFFFF:#1EA1EC>Author</gradient><reset>: <white>").append(String.join(", ", getDescription().getAuthors())).append("\n");
         text.append("<gray>|<reset>\n");
-        text.append("<gray>|<reset> <b><gradient:#FFFFFF:#C81EEC>Contact</gradient></b><reset>:\n");
-        text.append("<gray>|<reset>   <gradient:#FFFFFF:#1EA1EC>Email</gradient><reset>: <white>marrineer@gmail.com\n");
-        text.append("<gray>|<reset>   <gradient:#FFFFFF:#1EA1EC>Discord</gradient><reset>: <white>@marrineer\n");
-        text.append("<gray>|<reset>\n");
-        if (status.getStatus()) {
+
+        if (isEnabling) {
             text.append("<gray>|<reset> <b><gradient:#FFFFFF:#C81EEC>Status</gradient></b><reset>:\n");
-            text.append("<gray>|<reset>   <gradient:#FFFFFF:#1EA1EC>Vault</gradient><reset>: ").append(ECONEnabled ? "<green>Enabled\n" : "<red>Disabled\n");
+            text.append("<gray>|<reset>   <gradient:#FFFFFF:#1EA1EC>Vault</gradient><reset>: ").append(econ != null ? "<green>Enabled\n" : "<red>Disabled\n");
             text.append("<gray>|<reset>   <gradient:#FFFFFF:#1EA1EC>PlaceholderAPI</gradient><reset>: ").append(PAPIEnabled ? "<green>Enabled\n" : "<red>Disabled\n");
             text.append("<gray>|<reset>\n");
         }
+
         text.append("<dark_gray>[]=========================================[]</dark_gray>\n");
 
-        Bukkit.getConsoleSender().sendMessage(
-                MiniMessage.miniMessage().deserialize(text.toString())
-        );
+        Bukkit.getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize(text.toString()));
     }
+
 
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
@@ -126,16 +154,24 @@ public final class CoordLeak extends JavaPlugin {
             return false;
         }
         econ = rsp.getProvider();
-        return true;
+        return econ != null;
     }
 
-    // Instance
+    // Manager Getters
+    public ConfigManager getConfigManager() {
+        return configManager;
+    }
+
     public MessageManager getMessageManager() {
         return messageManager;
     }
 
-    public FileConfiguration getMessage() {
-        return messageManager.getMessages();
+    public CooldownManager getCooldownManager() {
+        return cooldownManager;
+    }
+
+    public MessageUtil getMessageUtil() {
+        return messageUtil;
     }
 
     public Economy getEconomy() {
@@ -143,14 +179,16 @@ public final class CoordLeak extends JavaPlugin {
     }
 
     public Audience audience(CommandSender sender) {
-        return adventure.sender(sender);
+        return adventure().sender(sender);
     }
 
     public Audience audience(Player player) {
-        return adventure.player(player);
+        return adventure().player(player);
     }
 
     public boolean hasPAPI() {
         return PAPIEnabled;
     }
 }
+
+

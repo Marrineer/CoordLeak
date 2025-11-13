@@ -1,38 +1,36 @@
 package com.qhuy.coordLeak.managers;
 
+import com.qhuy.coordLeak.CoordLeak;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 
-import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
-public class CooldownManager implements Listener {
-    private final HashMap<UUID, Long> cooldowns = new HashMap<>();
+public class CooldownManager {
+    private final CoordLeak plugin;
+    private final ConcurrentHashMap<UUID, Long> cooldowns = new ConcurrentHashMap<>();
+
+    public CooldownManager(CoordLeak plugin) {
+        this.plugin = plugin;
+    }
 
     public void setCooldown(Player player, long seconds) {
-        long cooldownEnd = System.currentTimeMillis() + (seconds * 1000);
+        long cooldownEnd = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(seconds);
         cooldowns.put(player.getUniqueId(), cooldownEnd);
     }
 
-    public long getCooldown(Player player) {
+    public long getRemainingCooldown(Player player) {
         UUID uuid = player.getUniqueId();
-        if (!cooldowns.containsKey(uuid)) return 0;
-
-        long remaining = (cooldowns.get(uuid) - System.currentTimeMillis()) / 1000;
-        return Math.max(remaining, 0);
+        Long endTime = cooldowns.get(uuid);
+        if (endTime == null || System.currentTimeMillis() >= endTime) {
+            return 0;
+        }
+        return TimeUnit.MILLISECONDS.toSeconds(endTime - System.currentTimeMillis());
     }
 
     public boolean isOnCooldown(Player player) {
-        return getCooldown(player) > 0;
-    }
-
-    public boolean usable(Player player, long seconds) {
-        if (isOnCooldown(player)) {
-            return false;
-        } else {
-            setCooldown(player, seconds);
-            return true;
-        }
+        return getRemainingCooldown(player) > 0;
     }
 
     public void cleanup() {

@@ -12,6 +12,10 @@ setSuccess: "<green>Set usage count successfully</green>"
 onlyPlayer: "<red>Only player can use this command</red>"
 cannotTargetYourself: "You cannot target yourself!"
 cooldownMessage: "<red>You are on cooldown. Please wait before using this command again.</red>"
+currentPrice: "<green>The current price is: %price%</green>"
+priceNegative: "<red>Price cannot be negative.</red>"
+priceSet: "<green>Price has been set to: %price%</green>"
+invalidNumber: "<red>Invalid number format.</red>"
 
 help:
   - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
@@ -20,6 +24,8 @@ help:
   - "<gray>• <click:suggest_command:'/coord leak'><white>/coord leak</white></click> <gray>- Leak random player's location</gray>"
   - "<gray>• <click:suggest_command:'/coord share <player> <text>'><white>/coord share</white></click> <gray>- Share your location</gray>"
   - "<gray>• <click:suggest_command:'/coord reload'><white>/coord reload</white></click> <gray>- Reload plugin config</gray>"
+  - "<gray>• <click:suggest_command:'/coord info'><white>/coord info</white></click> <gray>- Show plugin info and current config</gray>"
+  - "<gray>• <click:suggest_command:'/setprice <amount>'><white>/setprice <amount></white></click> <gray>- Set the price for leaking coordinates</gray>"
   - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
 
 randomSelect:
@@ -35,3 +41,19 @@ shareCoord:
   - "<cyan>%player_name% Shared their position"
   - "➤ <cyan>X=%coordleak_posx% | Y=%coordleak_posy% | Z=%coordleak_posz%"
   - "<white>Dimension: <cyan>%coordleak_dimension%"
+
+# This is custom-placeholder, don't change it
+info:
+  layout:
+    - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
+    - "<white><gradient:#29E7D7:#FFFFFF>%plugin_name% Info</gradient>"
+    - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
+    - "<gray>• <white>Version: <aqua>%plugin_version%</aqua>"
+    - "<gray>• <white>Author: <aqua>%plugin_author%</aqua>"
+    - "<gray>• <white>Price: <gold>%leak_price%</gold>"
+    - "<gray>• <white>Cooldown: <yellow>%leak_cooldown%s</yellow>"
+    - "<gray>• <white>PlaceholderAPI: %papi_status%"
+    - "<gray>• <white>Vault: %vault_status%"
+    - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
+  enabled: "<green>Enabled</green>"
+  disabled: "<red>Disabled</red>"

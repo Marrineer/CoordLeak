@@ -7,8 +7,7 @@ public enum InfoStatus {
             return true;
         }
     },
-    STOP("<red>Stopping"),
-    RESTART("<yellow>Restarting");
+    STOP("<red>Stopping");
 
     private final String message;
 
