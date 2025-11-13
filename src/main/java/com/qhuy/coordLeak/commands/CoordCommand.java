@@ -15,9 +15,11 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class CoordCommand implements CommandExecutor, TabCompleter {
@@ -462,7 +464,7 @@ public class CoordCommand implements CommandExecutor, TabCompleter {
         String version = plugin.getDescription().getVersion();
         String author = String.join(", ", plugin.getDescription().getAuthors());
         double defaultPrice = plugin.getConfigManager().getDefaultPrice();
-        long leakCooldown = plugin.getConfigManager().getCooldown("leak");
+        long leakCooldown = plugin.getConfigManager().getCooldownMillis("leak");
         String papiStatus = plugin.hasPAPI() ? plugin.getMessageManager().getString("info.enabled", "Enabled") : plugin.getMessageManager().getString("info.disabled", "Disabled");
         String vaultStatus = plugin.getEconomy() != null ? plugin.getMessageManager().getString("info.enabled", "Enabled") : plugin.getMessageManager().getString("info.disabled", "Disabled");
 

@@ -10,7 +10,7 @@ price:
   # Minimum allowed price.
   min: 1.0
   # Maximum allowed price.
-  max: 10000.0
+  max: 100000.0
 
 # --- Cooldowns (in seconds) ---
 # Time a player must wait between uses of a command.

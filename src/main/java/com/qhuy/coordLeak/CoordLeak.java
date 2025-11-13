@@ -52,7 +52,7 @@ public final class CoordLeak extends JavaPlugin {
 
         // Check for PlaceholderAPI
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            PAPI = new CoordLeakExpansion();
+            PAPI = new CoordLeakExpansion(this);
             PAPIEnabled = PAPI.register();
             getLogger().info("PlaceholderAPI found and hooked.");
         } else {
@@ -112,12 +112,12 @@ public final class CoordLeak extends JavaPlugin {
             if (PAPI != null) {
                 PAPI.unregister();
             }
-            PAPI = new CoordLeakExpansion();
+            PAPI = new CoordLeakExpansion(this);
             PAPIEnabled = PAPI.register();
         } else {
             PAPIEnabled = false;
             if (PAPI != null) {
-                PAPI.unregister(); // Ensure it's unregistered if PAPI was disabled
+                PAPI.unregister();
                 PAPI = null;
             }
         }

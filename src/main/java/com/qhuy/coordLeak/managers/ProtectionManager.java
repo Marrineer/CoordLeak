@@ -2,10 +2,11 @@ package com.qhuy.coordLeak.managers;
 
 import com.qhuy.coordLeak.CoordLeak;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.Deque;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
@@ -24,15 +25,13 @@ public class ProtectionManager {
 
     // Daily Limits: Map<UUID, Map<CommandName, Map<Date, Count>>>
     private final Map<UUID, Map<String, Map<Long, AtomicInteger>>> playerDailyLimits = new ConcurrentHashMap<>();
-
-    // Global Rate Limit
-    private long globalLastResetTime = System.currentTimeMillis();
     private final AtomicInteger globalRequestCount = new AtomicInteger(0);
-    private long globalBlockUntil = 0; // Timestamp until global requests are blocked
-
     // Command Confirmation (for reload/setprice)
     // Map<UUID, Map<CommandName, ConfirmationTimestamp>>
     private final Map<UUID, Map<String, Long>> pendingConfirmations = new ConcurrentHashMap<>();
+    // Global Rate Limit
+    private long globalLastResetTime = System.currentTimeMillis();
+    private long globalBlockUntil = 0; // Timestamp until global requests are blocked
 
     public ProtectionManager(CoordLeak plugin, ConfigManager configManager) {
         this.plugin = plugin;
@@ -323,7 +322,7 @@ public class ProtectionManager {
         // Clean playerCooldowns (not strictly necessary as it's overwritten, but good for memory)
         playerCooldowns.entrySet().removeIf(entry -> {
             entry.getValue().entrySet().removeIf(cmdEntry -> {
-                long cooldownMillis = configManager.getCooldown(cmdEntry.getKey());
+                long cooldownMillis = configManager.getCooldownMillis(cmdEntry.getKey());
                 return (cmdEntry.getValue() + cooldownMillis) < currentTime;
             });
             return entry.getValue().isEmpty();
@@ -372,6 +371,7 @@ public class ProtectionManager {
 
     /**
      * Gets the current global block remaining time.
+     *
      * @return Remaining time in milliseconds, 0 if not blocked.
      */
     public long getGlobalBlockRemaining() {

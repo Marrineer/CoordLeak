@@ -124,6 +124,12 @@ public class ConfigManager {
         return defaultPrice;
     }
 
+    public void setDefaultPrice(double price) {
+        this.defaultPrice = price;
+        plugin.getConfig().set("price.default", price);
+        plugin.saveConfig();
+    }
+
     public double getMinPrice() {
         return minPrice;
     }
@@ -132,36 +138,47 @@ public class ConfigManager {
         return maxPrice;
     }
 
-    public void setDefaultPrice(double price) {
-        this.defaultPrice = price;
-        plugin.getConfig().set("price.default", price);
-        plugin.saveConfig();
+    /**
+     * Returns cooldown in milliseconds for given command key.
+     * Backward compatibility: existing internal fields already stored in ms.
+     */
+    public long getCooldownMillis(String command) {
+        return switch (command.toLowerCase()) {
+            case "leak" -> leakCooldown;
+            case "share" -> shareCooldown;
+            case "setprice" -> setPriceCooldown;
+            default -> 0L;
+        };
     }
 
+    @Deprecated // Use getCooldownMillis instead
     public long getCooldown(String command) {
-        switch (command.toLowerCase()) {
-            case "leak": return leakCooldown;
-            case "share": return shareCooldown;
-            case "setprice": return setPriceCooldown;
-            default: return 0;
-        }
+        return getCooldownMillis(command);
     }
 
     public int getRateLimit(String command) {
         switch (command.toLowerCase()) {
-            case "leak": return leakRateLimit;
-            case "share": return shareRateLimit;
-            case "setprice": return setPriceRateLimit;
-            default: return 0;
+            case "leak":
+                return leakRateLimit;
+            case "share":
+                return shareRateLimit;
+            case "setprice":
+                return setPriceRateLimit;
+            default:
+                return 0;
         }
     }
 
     public long getRateLimitWindow(String command) {
         switch (command.toLowerCase()) {
-            case "leak": return leakRateLimitWindow;
-            case "share": return shareRateLimitWindow;
-            case "setprice": return setPriceRateLimitWindow;
-            default: return 0;
+            case "leak":
+                return leakRateLimitWindow;
+            case "share":
+                return shareRateLimitWindow;
+            case "setprice":
+                return setPriceRateLimitWindow;
+            default:
+                return 0;
         }
     }
 
@@ -183,9 +200,12 @@ public class ConfigManager {
 
     public int getDailyLimit(String command) {
         switch (command.toLowerCase()) {
-            case "leak": return dailyLeakLimit;
-            case "share": return dailyShareLimit;
-            default: return 0;
+            case "leak":
+                return dailyLeakLimit;
+            case "share":
+                return dailyShareLimit;
+            default:
+                return 0;
         }
     }
 
