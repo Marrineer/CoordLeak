@@ -2,9 +2,9 @@ name: Maven CI
 
 on:
   push:
-    tags:
-      - 'v*'
     branches: [ "main" ]
+    tags:
+      - "v*"
   pull_request:
     branches: [ "main" ]
 
@@ -18,25 +18,40 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21 ( Temurin )
+      - name: Set up JDK 21 (Temurin)
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
           cache: maven
 
-      - name: Build Project with Maven
-        run: mvn -B clean package --file ./pom.xml
+      - name: Validate Maven Wrapper
+        run: mvn -N io.takari:maven:wrapper
+
+      - name: Verify & Run Unit Tests
+        run: mvn -B verify --file ./pom.xml
+
+      - name: Build JAR Artifact
+        run: mvn -B clean package -DskipTests=false --file ./pom.xml
+
+      - name: Upload Build Artifacts (for PRs)
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coordleak-${{ github.run_number }}
+          path: target/*.jar
 
       - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          name: "${{ github.ref_name }}"
+          name: "CoordLeak ${{ github.ref_name }}"
           tag_name: "${{ github.ref_name }}"
           body: |
-            🧪 This is an automatic release build.
+            🧪 Automated CI Release
             - Commit: ${{ github.sha }}
-            - Branch: ${{ github.ref }}
+            - Branch: ${{ github.ref_name }}
+            - Build: ${{ github.run_number }}
           files: |
             target/*.jar
         env:
