@@ -1,45 +1,30 @@
 package com.qhuy.coordLeak.utils;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.entity.Player;
 
 /**
- * Sanitizes user input to prevent injection attacks.
+ * Sanitizes user input to prevent formatting abuse.
  */
 public class Sanitizer {
 
-    public static String sanitizeCustomText(String input, Player player, boolean hasAdminPerm) {
-        if (input == null || input.isEmpty()) return input;
-
-        if (hasAdminPerm) {
-            return input; // Admins can use MiniMessage tags
+    /**
+     * Sanitizes a string by stripping MiniMessage tags and escaping PlaceholderAPI placeholders.
+     * This is intended for user-provided text from non-admins.
+     *
+     * @param input The string to sanitize.
+     * @return The sanitized string.
+     */
+    public String sanitize(String input) {
+        if (input == null || input.isEmpty()) {
+            return "";
         }
 
-        // Strip MiniMessage tags for non-admins
-        String stripped = MiniMessage.miniMessage().stripTags(input);
+        // Strip MiniMessage tags to prevent formatting abuse.
+        String sanitized = MiniMessage.miniMessage().stripTags(input);
 
-        // Escape PlaceholderAPI placeholders (% to %%)
-        stripped = stripped.replace("%", "%%");
+        // Escape PlaceholderAPI placeholders to prevent them from being parsed.
+        sanitized = sanitized.replace("%", "%%");
 
-        // Remove control characters
-        stripped = stripped.replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", "");
-
-        // Limit length
-        if (stripped.length() > 256) {
-            stripped = stripped.substring(0, 256);
-        }
-
-        return stripped;
-    }
-
-    public static boolean containsDangerousPatterns(String input) {
-        if (input == null) return false;
-
-        // Check for suspicious patterns
-        String lower = input.toLowerCase();
-        return lower.contains("<script")
-                || lower.contains("javascript:")
-                || lower.contains("onerror=")
-                || lower.contains("<iframe");
+        return sanitized;
     }
 }

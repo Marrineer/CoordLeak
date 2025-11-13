@@ -27,11 +27,14 @@ public class ConsentManager {
 
         Player targetPlayer = Bukkit.getPlayer(target);
         if (targetPlayer != null) {
-            String msg = plugin.getMessageManager().getString("consent.request",
-                            "<gray>{sender} wants to share your coordinates. <click:run_command:'/coord consent accept {id}'>[Accept]</click> <click:run_command:'/coord consent deny {id}'>[Deny]</click>")
-                    .replace("{sender}", Bukkit.getPlayer(requester) != null ? Bukkit.getPlayer(requester).getName() : "Player")
-                    .replace("{id}", requestId);
-            plugin.getMessageUtil().sendToPlayer(msg, targetPlayer);
+            String senderName = "A player";
+            Player requesterPlayer = Bukkit.getPlayer(requester);
+            if (requesterPlayer != null) {
+                senderName = requesterPlayer.getName();
+            }
+            plugin.getMessageUtil().send(targetPlayer, "consent.request",
+                    "%sender%", senderName,
+                    "%id%", requestId);
         }
 
         return requestId;
@@ -57,10 +60,7 @@ public class ConsentManager {
 
         Player requester = Bukkit.getPlayer(req.requester);
         if (requester != null) {
-            plugin.getMessageUtil().sendToPlayer(
-                    plugin.getMessageManager().getString("consent.denied", "<red>Your coordinate share request was denied."),
-                    requester
-            );
+            plugin.getMessageUtil().send(requester, "consent.denied");
         }
         return true;
     }

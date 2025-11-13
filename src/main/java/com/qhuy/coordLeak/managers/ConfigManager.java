@@ -11,6 +11,8 @@ public class ConfigManager {
 
     private final CoordLeak plugin;
 
+    private String prefix;
+
     // Price Settings
     private double defaultPrice;
     private double minPrice;
@@ -69,10 +71,13 @@ public class ConfigManager {
         plugin.reloadConfig();
         FileConfiguration config = plugin.getConfig();
 
+        // General Settings
+        prefix = config.getString("prefix", "<i><gradient:#FFFFFF:#29E7D7>[ Coord ]</gradient></i>");
+
         // Price Settings
         defaultPrice = config.getDouble("price.default", 50.0);
         minPrice = config.getDouble("price.min", 1.0);
-        maxPrice = config.getDouble("price.max", 10000.0);
+        maxPrice = config.getDouble("price.max", 100000.0);
 
         // Cooldowns (per-command)
         leakCooldown = config.getLong("cooldowns.leak", 5) * 1000L;
@@ -119,6 +124,10 @@ public class ConfigManager {
     }
 
     // --- Getters ---
+
+    public String getPrefix() {
+        return prefix;
+    }
 
     public double getDefaultPrice() {
         return defaultPrice;

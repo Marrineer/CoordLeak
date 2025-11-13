@@ -1,6 +1,9 @@
 # CoordLeak Plugin Configuration
 
 # --- General Settings ---
+# The prefix used for all plugin messages.
+# You can use MiniMessage format for gradients and advanced colors.
+# A placeholder {prefix} is available in all messages in messages.yml.
 prefix: "<i><gradient:#FFFFFF:#29E7D7>[ Coord ]</gradient></i>"
 
 # --- Price Settings ---

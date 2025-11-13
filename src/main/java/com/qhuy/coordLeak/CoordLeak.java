@@ -8,6 +8,7 @@ import com.qhuy.coordLeak.managers.ProtectionManager;
 import com.qhuy.coordLeak.utils.CoordLeakExpansion;
 import com.qhuy.coordLeak.utils.InfoStatus;
 import com.qhuy.coordLeak.utils.MessageUtil;
+import com.qhuy.coordLeak.utils.Sanitizer;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -27,6 +28,7 @@ public final class CoordLeak extends JavaPlugin {
     private ProtectionManager protectionManager;
     private AuditLogger auditLogger;
     private MessageUtil messageUtil;
+    private Sanitizer sanitizer;
     private CoordLeakExpansion PAPI;
     private boolean PAPIEnabled;
     private BukkitTask cleanupTask;
@@ -49,6 +51,7 @@ public final class CoordLeak extends JavaPlugin {
         this.protectionManager = new ProtectionManager(this, configManager); // Pass configManager
         this.auditLogger = new AuditLogger(this, configManager); // Pass configManager
         this.messageUtil = new MessageUtil(this);
+        this.sanitizer = new Sanitizer();
 
         // Check for PlaceholderAPI
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
@@ -103,7 +106,7 @@ public final class CoordLeak extends JavaPlugin {
 
     public void reloadManagers() {
         configManager.loadConfig();
-        messageManager.reloadMessage();
+        messageManager.reloadMessages();
         // ProtectionManager reloads its config values on next check, but we can force a reload if needed
         // For now, just ensure configManager is reloaded.
         // If ProtectionManager had internal state that needed resetting based on config, a reload method would be here.
@@ -187,6 +190,10 @@ public final class CoordLeak extends JavaPlugin {
 
     public MessageUtil getMessageUtil() {
         return messageUtil;
+    }
+
+    public Sanitizer getSanitizer() {
+        return sanitizer;
     }
 
     public Economy getEconomy() {

@@ -1,8 +1,6 @@
 package com.qhuy.coordLeak.utils;
 
 import com.qhuy.coordLeak.CoordLeak;
-import me.clip.placeholderapi.PlaceholderAPI;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -13,22 +11,36 @@ public class MessageUtil {
         this.plugin = plugin;
     }
 
-    private String formatMessage(String text, Player player) {
-        String prefix = plugin.getConfig().getString("prefix", "");
-        String message = String.format("%s %s", prefix, text);
-        if (plugin.hasPAPI() && player != null) {
-            message = PlaceholderAPI.setPlaceholders(player, message);
-        }
-        return message;
+    /**
+     * Sends a formatted message to a CommandSender using the MessageManager.
+     *
+     * @param sender The recipient of the message.
+     * @param key The key of the message in messages.yml.
+     * @param replacements Placeholders and their values.
+     */
+    public void send(CommandSender sender, String key, String... replacements) {
+        plugin.getMessageManager().send(sender, key, replacements);
     }
 
-    public void sendToSender(String text, CommandSender sender) {
-        String formattedMessage = formatMessage(text, sender instanceof Player ? (Player) sender : null);
-        plugin.audience(sender).sendMessage(MiniMessage.miniMessage().deserialize(formattedMessage));
+    /**
+     * Sends a formatted message to a Player using the MessageManager.
+     *
+     * @param player The recipient of the message.
+     * @param key The key of the message in messages.yml.
+     * @param replacements Placeholders and their values.
+     */
+    public void send(Player player, String key, String... replacements) {
+        plugin.getMessageManager().send(player, key, replacements);
     }
 
-    public void sendToPlayer(String text, Player player) {
-        String formattedMessage = formatMessage(text, player);
-        plugin.audience(player).sendMessage(MiniMessage.miniMessage().deserialize(formattedMessage));
+    /**
+     * Sends a list of formatted messages to a CommandSender using the MessageManager.
+     *
+     * @param sender The recipient of the messages.
+     * @param key The key of the message list in messages.yml.
+     * @param replacements Placeholders and their values.
+     */
+    public void sendList(CommandSender sender, String key, String... replacements) {
+        plugin.getMessageManager().sendList(sender, key, replacements);
     }
 }

@@ -1,13 +1,20 @@
 package com.qhuy.coordLeak.managers;
 
 import com.qhuy.coordLeak.CoordLeak;
+import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MessageManager {
     private final CoordLeak plugin;
@@ -20,156 +27,109 @@ public class MessageManager {
         if (!file.exists()) {
             plugin.saveResource("messages.yml", false);
         }
-        reloadMessage();
+        reloadMessages();
     }
 
-    public void reloadMessage() {
+    public void reloadMessages() {
         this.messages = YamlConfiguration.loadConfiguration(file);
         try (InputStreamReader reader = new InputStreamReader(plugin.getResource("messages.yml"), StandardCharsets.UTF_8)) {
-            FileConfiguration defaultMessage = YamlConfiguration.loadConfiguration(reader);
-            messages.setDefaults(defaultMessage);
+            FileConfiguration defaultMessages = YamlConfiguration.loadConfiguration(reader);
+            messages.setDefaults(defaultMessages);
             messages.options().copyDefaults(true);
+            plugin.saveResource("messages.yml", false); // Save to copy new defaults
         } catch (Exception e) {
             plugin.getLogger().severe("Could not load default messages.yml: " + e.getMessage());
         }
     }
 
-    public FileConfiguration getMessages() {
-        return messages;
-    }
-
+    /**
+     * Gets a raw string from the messages file.
+     * @param key The key of the message.
+     * @param defaultValue The default value if the key is not found.
+     * @return The raw string.
+     */
     public String getString(String key, String defaultValue) {
-        if (messages == null) {
-            plugin.getLogger().warning("messages.yml has not been loaded. Returning default value for key: " + key);
-            return defaultValue;
+        return messages.getString(key, defaultValue);
+    }
+
+    /**
+     * Gets a raw list of strings from the messages file.
+     * @param key The key of the message list.
+     * @return The raw list of strings.
+     */
+    public List<String> getStringList(String key) {
+        return messages.getStringList(key);
+    }
+
+    /**
+     * Formats a message by replacing placeholders.
+     *
+     * @param message The message to format.
+     * @param player  The player for PlaceholderAPI, can be null.
+     * @param replacements Placeholders and their values, e.g., "%placeholder%", "value".
+     * @return The formatted message string.
+     */
+    private String format(String message, Player player, String... replacements) {
+        message = message.replace("{prefix}", plugin.getConfigManager().getPrefix());
+
+        for (int i = 0; i < replacements.length; i += 2) {
+            if (i + 1 < replacements.length) {
+                message = message.replace(replacements[i], replacements[i + 1]);
+            }
         }
-        String value = messages.getString(key);
-        if (value == null) {
-            plugin.getLogger().warning("Missing message key '" + key + "' in messages.yml. Using default value.");
-            return defaultValue;
+
+        if (plugin.hasPAPI() && player != null) {
+            message = PlaceholderAPI.setPlaceholders(player, message);
         }
-        return value;
+
+        return message;
     }
 
-    public List<String> getStringList(String key, List<String> defaultList) {
-        if (messages == null) {
-            plugin.getLogger().warning("messages.yml has not been loaded. Returning default list for key: " + key);
-            return defaultList;
+    /**
+     * Gets a formatted string from messages.yml.
+     *
+     * @param key The key of the message.
+     * @param player The player for PAPI placeholders, can be null.
+     * @param replacements Placeholders and their values.
+     * @return The formatted string.
+     */
+    public String getFormattedString(String key, Player player, String... replacements) {
+        String message = getString(key, "<red>Missing message key: " + key + "</red>");
+        return format(message, player, replacements);
+    }
+
+    /**
+     * Sends a formatted message to a CommandSender.
+     *
+     * @param sender The recipient of the message.
+     * @param key The key of the message in messages.yml.
+     * @param replacements Placeholders and their values.
+     */
+    public void send(CommandSender sender, String key, String... replacements) {
+        Player player = sender instanceof Player ? (Player) sender : null;
+        String message = getFormattedString(key, player, replacements);
+        plugin.audience(sender).sendMessage(MiniMessage.miniMessage().deserialize(message));
+    }
+
+    /**
+     * Sends a list of formatted messages to a CommandSender.
+     *
+     * @param sender The recipient of the messages.
+     * @param key The key of the message list in messages.yml.
+     * @param replacements Placeholders and their values.
+     */
+    public void sendList(CommandSender sender, String key, String... replacements) {
+        Player player = sender instanceof Player ? (Player) sender : null;
+        List<String> messageList = getStringList(key);
+
+        if (messageList.isEmpty()) {
+            send(sender, "config-error");
+            return;
         }
-        List<String> value = messages.getStringList(key);
-        if (value == null || value.isEmpty()) {
-            plugin.getLogger().warning("Missing message list key '" + key + "' in messages.yml or list is empty. Using default list.");
-            return defaultList;
+
+        for (String message : messageList) {
+            String formattedMessage = format(message, player, replacements);
+            plugin.audience(sender).sendMessage(MiniMessage.miniMessage().deserialize(formattedMessage));
         }
-        return defaultList; // Return defaultList if value is null or empty
-    }
-
-    // --- New Message Getters ---
-    public String getPrefix() {
-        return getString("prefix", "&7[&bCoordLeak&7] ");
-    }
-
-    public String getNoPermission() {
-        return getString("no-permission", "&cYou don't have permission to do that.");
-    }
-
-    public String getPlayerOnlyCommand() {
-        return getString("player-only-command", "&cThis command can only be run by a player.");
-    }
-
-    public String getCommandCooldown() {
-        return getString("command-cooldown", "&cYou are on cooldown for this command. Please wait %time%.");
-    }
-
-    public String getCommandRateLimited() {
-        return getString("command-rate-limited", "&cYou are sending commands too fast. Please slow down.");
-    }
-
-    public String getGlobalRateLimited() {
-        return getString("global-rate-limited", "&cThe server is currently under high load. Please try again in a moment.");
-    }
-
-    public String getDailyLimitExceeded() {
-        return getString("daily-limit-exceeded", "&cYou have exceeded your daily limit for this command.");
-    }
-
-    public String getPlayerBlacklisted() {
-        return getString("player-blacklisted", "&cYou are blacklisted from using this feature.");
-    }
-
-    public String getPlayerNotWhitelisted() {
-        return getString("player-not-whitelisted", "&cYou are not whitelisted to use this feature.");
-    }
-
-    public String getInvalidPrice() {
-        return getString("invalid-price", "&cInvalid price. Please enter a valid number.");
-    }
-
-    public String getPriceOutOfRange() {
-        return getString("price-out-of-range", "&cThe price must be between %min_price% and %max_price%.");
-    }
-
-    public String getEconomyError() {
-        return getString("economy-error", "&cAn economy error occurred. Please contact an administrator.");
-    }
-
-    public String getInsufficientFunds() {
-        return getString("insufficient-funds", "&cYou do not have enough money to do that. You need %amount%.");
-    }
-
-    public String getTargetNotOnline() {
-        return getString("target-not-online", "&cThe target player is not online.");
-    }
-
-    public String getTargetExcludedWorld() {
-        return getString("target-excluded-world", "&cYou cannot leak coordinates in this world.");
-    }
-
-    public String getTargetExcludedPermission() {
-        return getString("target-excluded-permission", "&cThis player is protected from coordinate leaks.");
-    }
-
-    public String getTargetNoConsent() {
-        return getString("target-no-consent", "&cThe target player has not consented to share their coordinates.");
-    }
-
-    public String getReloadConfirmRequired() {
-        return getString("reload-confirm-required", "&ePlease confirm your reload by typing &6/coord reload confirm &ewithin %time% seconds.");
-    }
-
-    public String getReloadConfirmed() {
-        return getString("reload-confirmed", "&aPlugin reloaded successfully!");
-    }
-
-    public String getReloadCancelled() {
-        return getString("reload-cancelled", "&cReload confirmation expired or cancelled.");
-    }
-
-    public String getSetPriceSuccess() {
-        return getString("setprice-success", "&aPrice for leaking coordinates set to &e%price%&a.");
-    }
-
-    public String getLeakSuccess() {
-        return getString("leak-success", "&aYou successfully leaked &e%player%'s &acoordinates: &e%coords%&a.");
-    }
-
-    public String getShareSuccessSender() {
-        return getString("share-success-sender", "&aYou shared &e%player%'s &acoordinates with &e%target%&a.");
-    }
-
-    public String getShareSuccessTarget() {
-        return getString("share-success-target", "&a%sender% &ashared &e%player%'s &acoordinates with you: &e%coords%&a.");
-    }
-
-    public String getNoLeakTargetFound() {
-        return getString("no-leak-target-found", "&cNo suitable player found to leak coordinates.");
-    }
-
-    public String getAdminActionLogged() {
-        return getString("admin-action-logged", "&eAdmin action logged.");
-    }
-
-    public String getGlobalLimitExceededLog() {
-        return getString("global-limit-exceeded-log", "&c[CoordLeak] Global rate limit exceeded. Blocking requests for %time% seconds.");
     }
 }
