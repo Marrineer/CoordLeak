@@ -2,7 +2,7 @@
 
 A lightweight and modular Minecraft plugin for Paper/Spigot servers that allows players to "leak" (reveal) random online player coordinates for a configurable price, or "share" their own coordinates with others. Built with production-grade standards, featuring robust economy integration, cooldowns, and extensive message customization.
 
-## ✨ Features
+## Features
 
 *   **Coordinate Leaking:** Players can pay a configurable price to get the coordinates (X, Z, and dimension) of a random online player.
 *   **Coordinate Sharing:** Players can share their current location with another player, optionally including a custom message.
@@ -15,7 +15,7 @@ A lightweight and modular Minecraft plugin for Paper/Spigot servers that allows 
 *   **Tab Completion:** Intuitive tab completion for all commands and subcommands.
 *   **Modular & Efficient:** Designed with a clean, modular architecture using dependency injection for optimal performance and maintainability.
 
-## 🚀 Commands
+## Commands
 
 | Command                               | Description                                                              | Permission             | Default       |
 | :------------------------------------ | :----------------------------------------------------------------------- | :--------------------- | :------------ |
@@ -24,7 +24,7 @@ A lightweight and modular Minecraft plugin for Paper/Spigot servers that allows 
 | `/coord reload`                       | Reloads the plugin's `config.yml` and `messages.yml`.                    | `coordleak.admin`      | ❌ OP only     |
 | `/setprice [amount]`                  | Sets the price for the `/coord leak` command. If no amount, shows current. | `coordleak.setprice`   | ❌ OP only     |
 
-## 🔒 Permissions
+## Permissions
 
 | Permission             | Description                                                              | Default       |
 | :--------------------- | :----------------------------------------------------------------------- | :------------ |
@@ -33,7 +33,7 @@ A lightweight and modular Minecraft plugin for Paper/Spigot servers that allows 
 | `coordleak.share`      | Allows players to use the `/coord share` command.                        | ✅ All players |
 | `coordleak.setprice`   | Allows administrators to use the `/setprice` command.                    | ❌ OP only     |
 
-## ⚙️ Configuration
+## Configuration
 
 ### `config.yml`
 
@@ -105,7 +105,7 @@ shareCoord:
   - "<white>Dimension: <cyan>%coordleak_dimension%"
 ```
 
-## 🧩 Placeholders (via PlaceholderAPI)
+## Placeholders (via PlaceholderAPI)
 
 | Placeholder           | Description                      |
 | :-------------------- | :------------------------------- |
@@ -114,28 +114,20 @@ shareCoord:
 | `%coordleak_posz%`    | Player's Z coordinate            |
 | `%coordleak_dimension%` | Player's current world/dimension |
 
-## 📦 Dependencies
+## Dependencies
 
 *   **Vault** (Required) - For economy integration.
 *   **PlaceholderAPI** (Optional) - For custom placeholders in messages.
 
-## 🛠️ Installation
-
-1.  Download the latest version of CoordLeak from the [releases page](link_to_releases_page_here).
-2.  Place the `CoordLeak-vX.X.X.jar` file into your server's `plugins/` folder.
-3.  Ensure you have **Vault** and a compatible economy plugin (e.g., EssentialsX) installed.
-4.  (Optional) Install **PlaceholderAPI** for full message customization.
-5.  Start or restart your server.
-6.  The `config.yml` and `messages.yml` files will be generated in the `plugins/CoordLeak/` folder. Customize them to your liking.
-
-## 🤝 Contributing
+## Contributing
 
 Pull requests are welcome! Feel free to fork the repository, improve the code, or suggest new ideas.
 
-## 📄 License
+## License
 
 This project is licensed under the GNU General Public License v3.0.
 
 ---
 **Author:** qhuy
+
 **Version:** v0.1-beta3
