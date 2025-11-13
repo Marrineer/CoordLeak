@@ -22,10 +22,6 @@ permissions:
     default: op
 commands:
   coord:
-    usage: /coord
-    description: Main command for CoordLeak plugin.
+    usage: /coord [leak|share|reload|setprice|info]
+    description: Main command for CoordLeak plugin. Use /coord setprice <amount> to set the price.
     permission: coordleak.leak
-  setprice:
-    usage: /setprice <amount>
-    description: Set the price for leaking coordinates.
-    permission: coordleak.setprice

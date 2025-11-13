@@ -1,8 +1,94 @@
+# CoordLeak Plugin Configuration
+
+# --- General Settings ---
 prefix: "<i><gradient:#FFFFFF:#29E7D7>[ Coord ]</gradient></i>"
 
-price: 1000
+# --- Price Settings ---
+price:
+  # Default price for leaking coordinates.
+  default: 50.0
+  # Minimum allowed price.
+  min: 1.0
+  # Maximum allowed price.
+  max: 10000.0
 
-settings:
-  cooldown-per-usage: 300 # SECOND
+# --- Cooldowns (in milliseconds) ---
+# Time a player must wait between uses of a command.
+cooldowns:
+  leak: 5000 # 5 seconds
+  share: 2000 # 2 seconds
+  reload: 10000 # 10 seconds for admin reload command
+  setprice: 5000 # 5 seconds for admin setprice command
 
-  clean-interval: 60 # SECOND
+# --- Rate Limits (per-player, sliding window) ---
+# Limits how many times a player can use a command within a specific window.
+ratelimit:
+  leak:
+    limit: 5 # Max 5 uses
+    window: 60000 # within 60 seconds (60000 ms)
+  share:
+    limit: 10 # Max 10 uses
+    window: 30000 # within 30 seconds (30000 ms)
+  setprice:
+    limit: 1 # Max 1 use
+    window: 10000 # within 10 seconds (10000 ms)
+
+# --- Global Rate Limit (server-wide anti-flood) ---
+# Limits total requests across the server to prevent abuse.
+global:
+  ratelimit:
+    enabled: true
+    limit: 200 # Max 200 requests
+    window: 60000 # within 60 seconds (60000 ms)
+    # How long to block all new requests if the global limit is exceeded (in milliseconds).
+    block-duration: 10000 # 10 seconds
+
+# --- Daily Limits (per-player) ---
+# Limits how many times a player can use a command per day.
+limits:
+  daily:
+    leak: 50 # Max 50 leaks per player per day
+    share: 100 # Max 100 shares per player per day
+
+# --- Audit Logging ---
+audit:
+  enabled: true
+  # Path to the audit log file, relative to the plugin's data folder.
+  # Will automatically roll daily.
+  log-file: "logs/coordleak.log"
+  # Set to true to log sensitive information like player IP addresses.
+  log-sensitive: false
+
+# --- Admin Command Protection ---
+reload:
+  # Whether admin commands like /coord reload and /setprice require a 'confirm' argument.
+  require-confirm: true
+  # Time (in milliseconds) a player has to confirm an admin command.
+  confirmation-timeout: 10000 # 10 seconds
+
+# --- Blacklist / Whitelist ---
+blacklist:
+  enabled: false
+  # List of player UUIDs who are blacklisted from using certain features.
+  uuids:
+    - "UUID_OF_PLAYER_1"
+    - "UUID_OF_PLAYER_2"
+whitelist:
+  enabled: false
+  # List of player UUIDs who are whitelisted to use certain features (if enabled).
+  uuids:
+    - "UUID_OF_PLAYER_3"
+    - "UUID_OF_PLAYER_4"
+
+# --- Target Validation ---
+target:
+  # List of world names where coordinates cannot be leaked/shared.
+  exclude-worlds:
+    - "admin_world"
+    - "event_world"
+  # List of permissions that protect a player from having their coordinates leaked/shared.
+  exclude-permissions:
+    - "coordleak.protected"
+    - "coordleak.staff"
+  # If true, players must explicitly consent to have their coordinates shared (TODO: consent mechanism).
+  require-consent-for-share: false

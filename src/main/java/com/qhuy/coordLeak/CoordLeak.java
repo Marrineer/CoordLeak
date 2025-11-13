@@ -1,10 +1,10 @@
 package com.qhuy.coordLeak;
 
 import com.qhuy.coordLeak.commands.CoordCommand;
-import com.qhuy.coordLeak.commands.SetPriceCommand;
+import com.qhuy.coordLeak.managers.AuditLogger;
 import com.qhuy.coordLeak.managers.ConfigManager;
-import com.qhuy.coordLeak.managers.CooldownManager;
 import com.qhuy.coordLeak.managers.MessageManager;
+import com.qhuy.coordLeak.managers.ProtectionManager;
 import com.qhuy.coordLeak.utils.CoordLeakExpansion;
 import com.qhuy.coordLeak.utils.InfoStatus;
 import com.qhuy.coordLeak.utils.MessageUtil;
@@ -23,8 +23,9 @@ public final class CoordLeak extends JavaPlugin {
     private BukkitAudiences adventure;
     private Economy econ;
     private MessageManager messageManager;
-    private CooldownManager cooldownManager;
     private ConfigManager configManager;
+    private ProtectionManager protectionManager;
+    private AuditLogger auditLogger;
     private MessageUtil messageUtil;
     private CoordLeakExpansion PAPI;
     private boolean PAPIEnabled;
@@ -45,7 +46,8 @@ public final class CoordLeak extends JavaPlugin {
         this.adventure = BukkitAudiences.create(this);
         this.configManager = new ConfigManager(this);
         this.messageManager = new MessageManager(this);
-        this.cooldownManager = new CooldownManager(this);
+        this.protectionManager = new ProtectionManager(this, configManager); // Pass configManager
+        this.auditLogger = new AuditLogger(this, configManager); // Pass configManager
         this.messageUtil = new MessageUtil(this);
 
         // Check for PlaceholderAPI
@@ -65,16 +67,13 @@ public final class CoordLeak extends JavaPlugin {
         }
         getLogger().info("Vault found and hooked.");
 
-        // Start cooldown cleanup task
+        // Start cleanup task for ProtectionManager
         long cleanupInterval = 20L * 300; // 5 minutes
-        this.cleanupTask = Bukkit.getScheduler().runTaskTimer(this, cooldownManager::cleanup, cleanupInterval, cleanupInterval);
+        this.cleanupTask = Bukkit.getScheduler().runTaskTimer(this, protectionManager::cleanup, cleanupInterval, cleanupInterval);
 
         // Register commands
         Bukkit.getPluginCommand("coord").setExecutor(
-                new CoordCommand(this)
-        );
-        Bukkit.getPluginCommand("setprice").setExecutor(
-                new SetPriceCommand(this)
+                new CoordCommand(this, protectionManager, auditLogger) // Pass new managers
         );
 
         info(InfoStatus.START);
@@ -96,12 +95,19 @@ public final class CoordLeak extends JavaPlugin {
         if (this.cleanupTask != null) {
             this.cleanupTask.cancel();
         }
+        if (this.auditLogger != null) {
+            this.auditLogger.shutdown(); // Shutdown audit logger executor
+        }
         saveConfig();
     }
 
     public void reloadManagers() {
         configManager.loadConfig();
         messageManager.reloadMessage();
+        // ProtectionManager reloads its config values on next check, but we can force a reload if needed
+        // For now, just ensure configManager is reloaded.
+        // If ProtectionManager had internal state that needed resetting based on config, a reload method would be here.
+
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             if (PAPI != null) {
                 PAPI.unregister();
@@ -166,8 +172,17 @@ public final class CoordLeak extends JavaPlugin {
         return messageManager;
     }
 
-    public CooldownManager getCooldownManager() {
-        return cooldownManager;
+    // Removed CooldownManager getter
+    // public CooldownManager getCooldownManager() {
+    //     return cooldownManager;
+    // }
+
+    public ProtectionManager getProtectionManager() {
+        return protectionManager;
+    }
+
+    public AuditLogger getAuditLogger() {
+        return auditLogger;
     }
 
     public MessageUtil getMessageUtil() {

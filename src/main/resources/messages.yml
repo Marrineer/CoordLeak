@@ -1,59 +1,69 @@
-# Thêm prefix vào các message quan trọng
-permission: "<red>You don't have permission to do this!</red>"
-configError: "<red>Config error, please check your config</red>"
-invalidArgument: "<yellow>Invalid argument. Please check your command.</yellow>"
-invalidPlayer: "<yellow>That player is not online or does not exist.</yellow>"
-notEnoughBalance: "<red>You don't have enough balance.</red>"
-buySuccessfully: "<green>You have successfully purchased</green>"
-noUsageLeft: "<red>You have no more uses left for this command. Visit the shop to get more!</red>"
-configReloaded: "<green>Config reloaded successfully</green>"
-noOneIsOnline: "<red>No players are currently online.</red>"
-setSuccess: "<green>Set usage count successfully</green>"
-onlyPlayer: "<red>Only player can use this command</red>"
-cannotTargetYourself: "You cannot target yourself!"
-cooldownMessage: "<red>You are on cooldown. Please wait before using this command again.</red>"
-currentPrice: "<green>The current price is: %price%</green>"
-priceNegative: "<red>Price cannot be negative.</red>"
-priceSet: "<green>Price has been set to: %price%</green>"
-invalidNumber: "<red>Invalid number format.</red>"
+# CoordLeak Plugin Messages
 
-help:
-  - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
-  - "<white><gradient:#29E7D7:#FFFFFF>CoordLeak Commands</gradient>"
-  - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
-  - "<gray>• <click:suggest_command:'/coord leak'><white>/coord leak</white></click> <gray>- Leak random player's location</gray>"
-  - "<gray>• <click:suggest_command:'/coord share <player> <text>'><white>/coord share</white></click> <gray>- Share your location</gray>"
-  - "<gray>• <click:suggest_command:'/coord reload'><white>/coord reload</white></click> <gray>- Reload plugin config</gray>"
-  - "<gray>• <click:suggest_command:'/coord info'><white>/coord info</white></click> <gray>- Show plugin info and current config</gray>"
-  - "<gray>• <click:suggest_command:'/setprice <amount>'><white>/setprice <amount></white></click> <gray>- Set the price for leaking coordinates</gray>"
-  - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
+# --- General Messages ---
+prefix: "&7[&bCoordLeak&7] "
+no-permission: "&cYou don't have permission to do that."
+player-only-command: "&cThis command can only be run by a player."
+configError: "&cConfig error, please check your config."
+invalidArgument: "&eInvalid argument. Please check your command."
 
-randomSelect:
-  - "<white>A random player has been selected!"
-  - "<white>Target: <cyan>%player_name%"
-  - "<white>Coord: <cyan>X=%coordleak_posx%, Z=%coordleak_posz%"
-  - "<white>Dimension: <cyan>%coordleak_dimension%"
+# --- Command Feedback Messages ---
+command-cooldown: "&cYou are on cooldown for this command. Please wait %time%."
+command-rate-limited: "&cYou are sending commands too fast. Please slow down."
+global-rate-limited: "&cThe server is currently under high load. Please try again in a moment."
+daily-limit-exceeded: "&cYou have exceeded your daily limit for this command."
+player-blacklisted: "&cYou are blacklisted from using this feature."
+player-not-whitelisted: "&cYou are not whitelisted to use this feature."
 
+# --- Economy Messages ---
+economy-error: "&cAn economy error occurred. Please contact an administrator."
+insufficient-funds: "&cYou do not have enough money to do that. You need %amount%."
+
+# --- Price Related Messages ---
+invalid-price: "&cInvalid price. Please enter a valid number."
+price-out-of-range: "&cThe price must be between %min_price% and %max_price%."
+currentPrice: "&aThe current price for leaking coordinates is: &e%price%&a."
+setprice-success: "&aPrice for leaking coordinates set to &e%price%&a."
+
+# --- Target Related Messages ---
+invalidPlayer: "&cThat player is not online or does not exist."
+cannotTargetYourself: "&cYou cannot target yourself!"
+target-not-online: "&cThe target player is not online."
+target-excluded-world: "&cYou cannot leak coordinates in this world."
+target-excluded-permission: "&cThis player is protected from coordinate leaks."
+target-no-consent: "&cThe target player has not consented to share their coordinates."
+no-leak-target-found: "&cNo suitable player found to leak coordinates."
+
+# --- Admin Command Confirmation Messages ---
+reload-confirm-required: "&ePlease confirm your action by typing &6/coord %command% confirm &ewithin %time% seconds."
+reload-confirmed: "&aAction confirmed. Plugin reloaded successfully!"
+reload-cancelled: "&cConfirmation expired or cancelled."
+admin-action-logged: "&eAdmin action logged."
+
+# --- Leak Command Messages ---
+leak-success: "&aYou successfully leaked &e%player%'s &acoordinates: &e%coords%&a."
 leak:
   exposed: "<red>Your location has been leaked!"
 
-shareCoord:
-  - "<cyan>%player_name% Shared their position"
-  - "➤ <cyan>X=%coordleak_posx% | Y=%coordleak_posy% | Z=%coordleak_posz%"
-  - "<white>Dimension: <cyan>%coordleak_dimension%"
+# --- Share Command Messages ---
+share-success-sender: "&aYou shared &e%player%'s &acoordinates with &e%target%&a."
+share-success-target: "&a%sender% &ashared &e%player%'s &acoordinates with you: &e%coords%&a."
 
-# This is custom-placeholder, don't change it
+# --- Info Command Layout ---
 info:
   layout:
     - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
-    - "<white><gradient:#29E7D7:#FFFFFF>%plugin_name% Info</gradient>"
+    - "<white><gradient:#29E7D7:#FFFFFF>CoordLeak Info</gradient>"
     - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
     - "<gray>• <white>Version: <aqua>%plugin_version%</aqua>"
     - "<gray>• <white>Author: <aqua>%plugin_author%</aqua>"
-    - "<gray>• <white>Price: <gold>%leak_price%</gold>"
-    - "<gray>• <white>Cooldown: <yellow>%leak_cooldown%s</yellow>"
+    - "<gray>• <white>Default Price: <gold>%leak_price%</gold>"
+    - "<gray>• <white>Leak Cooldown: <yellow>%leak_cooldown%</yellow>"
     - "<gray>• <white>PlaceholderAPI: %papi_status%"
     - "<gray>• <white>Vault: %vault_status%"
     - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
   enabled: "<green>Enabled</green>"
   disabled: "<red>Disabled</red>"
+
+# --- Internal Logging Messages ---
+global-limit-exceeded-log: "&c[CoordLeak] Global rate limit exceeded. Blocking requests for %time% seconds."
