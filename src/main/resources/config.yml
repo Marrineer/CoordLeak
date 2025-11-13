@@ -12,13 +12,12 @@ price:
   # Maximum allowed price.
   max: 10000.0
 
-# --- Cooldowns (in milliseconds) ---
+# --- Cooldowns (in seconds) ---
 # Time a player must wait between uses of a command.
 cooldowns:
-  leak: 5000 # 5 seconds
-  share: 2000 # 2 seconds
-  reload: 10000 # 10 seconds for admin reload command
-  setprice: 5000 # 5 seconds for admin setprice command
+  leak: 5 # 5 seconds
+  share: 2 # 2 seconds
+  setprice: 5 # 5 seconds for admin setprice command
 
 # --- Rate Limits (per-player, sliding window) ---
 # Limits how many times a player can use a command within a specific window.

@@ -19,7 +19,6 @@ public class ConfigManager {
     // Cooldowns (per-command)
     private long leakCooldown;
     private long shareCooldown;
-    private long reloadCooldown;
     private long setPriceCooldown;
 
     // Rate Limits (per-command, per-player)
@@ -76,10 +75,9 @@ public class ConfigManager {
         maxPrice = config.getDouble("price.max", 10000.0);
 
         // Cooldowns (per-command)
-        leakCooldown = config.getLong("cooldowns.leak", TimeUnit.SECONDS.toMillis(5));
-        shareCooldown = config.getLong("cooldowns.share", TimeUnit.SECONDS.toMillis(2));
-        reloadCooldown = config.getLong("cooldowns.reload", TimeUnit.SECONDS.toMillis(10));
-        setPriceCooldown = config.getLong("cooldowns.setprice", TimeUnit.SECONDS.toMillis(5));
+        leakCooldown = config.getLong("cooldowns.leak", 5) * 1000L;
+        shareCooldown = config.getLong("cooldowns.share", 2) * 1000L;
+        setPriceCooldown = config.getLong("cooldowns.setprice", 5) * 1000L;
 
         // Rate Limits (per-command, per-player)
         leakRateLimit = config.getInt("ratelimit.leak.limit", 5);
@@ -144,7 +142,6 @@ public class ConfigManager {
         switch (command.toLowerCase()) {
             case "leak": return leakCooldown;
             case "share": return shareCooldown;
-            case "reload": return reloadCooldown;
             case "setprice": return setPriceCooldown;
             default: return 0;
         }
