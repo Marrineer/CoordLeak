@@ -1,6 +1,7 @@
 package com.qhuy.coordLeak;
 
-import com.qhuy.coordLeak.commands.CoordCommand;
+import com.qhuy.coordLeak.commands.CommandManager;
+import com.qhuy.coordLeak.commands.subcommands.*;
 import com.qhuy.coordLeak.managers.AuditLogger;
 import com.qhuy.coordLeak.managers.ConfigManager;
 import com.qhuy.coordLeak.managers.MessageManager;
@@ -75,11 +76,29 @@ public final class CoordLeak extends JavaPlugin {
         this.cleanupTask = Bukkit.getScheduler().runTaskTimer(this, protectionManager::cleanup, cleanupInterval, cleanupInterval);
 
         // Register commands
-        Bukkit.getPluginCommand("coord").setExecutor(
-                new CoordCommand(this, protectionManager, auditLogger) // Pass new managers
-        );
+        setupCommands();
 
         info(InfoStatus.START);
+    }
+
+    private void setupCommands() {
+        CommandManager commandManager = new CommandManager(messageUtil);
+
+        // Register all subcommands
+        commandManager.registerSubCommand(new LeakCommand(this, protectionManager, auditLogger));
+        commandManager.registerSubCommand(new ShareCommand(this, protectionManager, auditLogger));
+        commandManager.registerSubCommand(new ReloadCommand(this, protectionManager, auditLogger));
+        commandManager.registerSubCommand(new SetPriceCommand(this, protectionManager, auditLogger));
+        commandManager.registerSubCommand(new InfoCommand(this));
+        // HelpCommand is registered by default in the CommandManager constructor
+
+        var pluginCommand = Bukkit.getPluginCommand("coord");
+        if (pluginCommand == null) {
+            getLogger().warning("Missing 'coord' command in plugin.yml. Command will not be registered.");
+        } else {
+            pluginCommand.setExecutor(commandManager);
+            pluginCommand.setTabCompleter(commandManager);
+        }
     }
 
     @Override

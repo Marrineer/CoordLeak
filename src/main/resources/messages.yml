@@ -11,6 +11,7 @@ invalid-argument: "{prefix} <yellow>Invalid argument. Use <white>/coord help</wh
 # --- Command Feedback Messages ---
 command-cooldown: "{prefix} <gray>Please wait <yellow>%time%</yellow> before using this command again."
 command-rate-limited: "{prefix} <gold>You're doing that a bit too fast. Please wait a moment."
+share-usage: "{prefix} <red>Usage: /coord share <player> [message]"
 global-rate-limited: "{prefix} <red>The server is currently limiting this action due to high usage. Please try again shortly."
 daily-limit-exceeded: "{prefix} <red>You have reached your daily usage limit for this command."
 player-blacklisted: "{prefix} <dark_red>You are restricted from using this feature."

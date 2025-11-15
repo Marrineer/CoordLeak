@@ -44,7 +44,7 @@ public class ConfigManager {
     // Audit Logging
     private boolean auditLoggingEnabled;
     private String auditLogFile;
-    private boolean auditLogSensitive;
+    private boolean ipLoggingEnabled;
 
     // Reload/Admin Command Protection
     private boolean reloadRequireConfirm;
@@ -105,7 +105,15 @@ public class ConfigManager {
         // Audit Logging
         auditLoggingEnabled = config.getBoolean("audit.enabled", true);
         auditLogFile = config.getString("audit.log-file", "logs/coordleak.log");
-        auditLogSensitive = config.getBoolean("audit.log-sensitive", false);
+
+        if (config.isSet("audit.log-ip-address")) {
+            ipLoggingEnabled = config.getBoolean("audit.log-ip-address");
+        } else if (config.isSet("audit.log-sensitive")) {
+            ipLoggingEnabled = config.getBoolean("audit.log-sensitive");
+            plugin.getLogger().warning("Config key 'audit.log-sensitive' is deprecated. Please migrate to 'audit.log-ip-address'.");
+        } else {
+            ipLoggingEnabled = false;
+        }
 
         // Reload/Admin Command Protection
         reloadRequireConfirm = config.getBoolean("reload.require-confirm", true);
@@ -226,8 +234,8 @@ public class ConfigManager {
         return auditLogFile;
     }
 
-    public boolean isAuditLogSensitiveEnabled() {
-        return auditLogSensitive;
+    public boolean isIpLoggingEnabled() {
+        return ipLoggingEnabled;
     }
 
     public boolean isReloadRequireConfirm() {

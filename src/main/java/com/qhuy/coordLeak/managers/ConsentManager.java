@@ -15,6 +15,7 @@ public class ConsentManager {
     private final CoordLeak plugin;
     private final Map<String, ConsentRequest> pendingRequests = new ConcurrentHashMap<>();
     private final long REQUEST_TIMEOUT = 30000L; // 30s
+
     public ConsentManager(CoordLeak plugin) {
         this.plugin = plugin;
         Bukkit.getScheduler().runTaskTimer(plugin, this::cleanup, 20L * 60, 20L * 60); // cleanup every 60s

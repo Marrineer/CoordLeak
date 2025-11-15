@@ -58,8 +58,8 @@ audit:
   # Path to the audit log file, relative to the plugin's data folder.
   # Will automatically roll daily.
   log-file: "logs/coordleak.log"
-  # Set to true to log sensitive information like player IP addresses.
-  log-sensitive: false
+  # Set to true to log player IP addresses.
+  log-ip-address: false
 
 # --- Admin Command Protection ---
 reload:

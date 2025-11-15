@@ -2,7 +2,6 @@ package com.qhuy.coordLeak.managers;
 
 import com.qhuy.coordLeak.CoordLeak;
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,9 +11,7 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MessageManager {
     private final CoordLeak plugin;
@@ -44,7 +41,8 @@ public class MessageManager {
 
     /**
      * Gets a raw string from the messages file.
-     * @param key The key of the message.
+     *
+     * @param key          The key of the message.
      * @param defaultValue The default value if the key is not found.
      * @return The raw string.
      */
@@ -54,6 +52,7 @@ public class MessageManager {
 
     /**
      * Gets a raw list of strings from the messages file.
+     *
      * @param key The key of the message list.
      * @return The raw list of strings.
      */
@@ -64,8 +63,8 @@ public class MessageManager {
     /**
      * Formats a message by replacing placeholders.
      *
-     * @param message The message to format.
-     * @param player  The player for PlaceholderAPI, can be null.
+     * @param message      The message to format.
+     * @param player       The player for PlaceholderAPI, can be null.
      * @param replacements Placeholders and their values, e.g., "%placeholder%", "value".
      * @return The formatted message string.
      */
@@ -88,8 +87,8 @@ public class MessageManager {
     /**
      * Gets a formatted string from messages.yml.
      *
-     * @param key The key of the message.
-     * @param player The player for PAPI placeholders, can be null.
+     * @param key          The key of the message.
+     * @param player       The player for PAPI placeholders, can be null.
      * @param replacements Placeholders and their values.
      * @return The formatted string.
      */
@@ -101,8 +100,8 @@ public class MessageManager {
     /**
      * Sends a formatted message to a CommandSender.
      *
-     * @param sender The recipient of the message.
-     * @param key The key of the message in messages.yml.
+     * @param sender       The recipient of the message.
+     * @param key          The key of the message in messages.yml.
      * @param replacements Placeholders and their values.
      */
     public void send(CommandSender sender, String key, String... replacements) {
@@ -114,8 +113,8 @@ public class MessageManager {
     /**
      * Sends a list of formatted messages to a CommandSender.
      *
-     * @param sender The recipient of the messages.
-     * @param key The key of the message list in messages.yml.
+     * @param sender       The recipient of the messages.
+     * @param key          The key of the message list in messages.yml.
      * @param replacements Placeholders and their values.
      */
     public void sendList(CommandSender sender, String key, String... replacements) {
