@@ -283,7 +283,7 @@ public class CoordCommand implements CommandExecutor, TabCompleter {
         protectionManager.incrementDailyUsage(player.getUniqueId(), "leak");
 
         String coords = String.format("X: %d, Y: %d, Z: %d", target.getLocation().getBlockX(), target.getLocation().getBlockY(), target.getLocation().getBlockZ());
-        messageUtil.send(player, "leak-success", "%player%", target.getName(), "%coords%", coords);
+        messageUtil.sendList(player, "leak-success", "%player%", target.getName(), "%coordleak_posx%", String.valueOf(target.getLocation().getBlockX()), "%coordleak_posz%", String.valueOf(target.getLocation().getBlockZ()), "%coordleak_dimension%", target.getWorld().getName());
         messageUtil.send(target, "leak-exposed");
 
         auditLogger.log("LEAK", player.getName(), target.getName(), price, "SUCCESS", player.getAddress() != null ? player.getAddress().getAddress().getHostAddress() : "N/A", "Leaked " + target.getName() + "'s coordinates: " + coords);

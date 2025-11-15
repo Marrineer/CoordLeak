@@ -6,7 +6,7 @@
 
     <groupId>com.qhuy</groupId>
     <artifactId>coordleak</artifactId>
-    <version>v0.1-pre1</version>
+    <version>v0.1-pre2</version>
     <packaging>jar</packaging>
 
     <properties>

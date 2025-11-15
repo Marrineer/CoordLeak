@@ -37,7 +37,7 @@ This command will clean the target directory, compile the source code, and packa
 5.  Start or restart your Minecraft server. The plugin will generate `config.yml` and `messages.yml` in its data folder (`plugins/CoordLeak/`).
 
 **Testing:**
-TODO: No explicit testing framework or tests were identified in the initial analysis. Unit and integration tests should be considered for future development.
+Unit and integration tests should be considered for future development.
 
 ## Development Conventions
 

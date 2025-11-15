@@ -140,73 +140,91 @@ target:
 All messages are fully customizable and support [MiniMessage](https://docs.adventure.kyori.net/minimessage/format.html) formatting.
 
 ```yaml
-# General messages
-prefix: "&7[&bCoordLeak&7] "
-no-permission: "&cYou don't have permission to do that."
-player-only-command: "&cThis command can only be run by a player."
-configError: "&cConfig error, please check your config."
-invalidArgument: "&eInvalid argument. Please check your command."
+# CoordLeak Plugin Messages - Enhanced by Gemini
+# All messages support MiniMessage format. For a full guide, visit: https://docs.advntr.dev/minimessage/format.html
+# Use the {prefix} placeholder to insert the prefix defined in config.yml.
+
+# --- General Messages ---
+no-permission: "{prefix} <red>You lack the required permission to perform this action."
+player-only-command: "{prefix} <red>This command is for players only."
+config-error: "{prefix} <dark_red>A configuration error was detected. Please notify an administrator."
+invalid-argument: "{prefix} <yellow>Invalid argument. Use <white>/coord help</white> for command usage."
 
 # --- Command Feedback Messages ---
-command-cooldown: "&cYou are on cooldown for this command. Please wait %time%."
-command-rate-limited: "&cYou are sending commands too fast. Please slow down."
-global-rate-limited: "&cThe server is currently under high load. Please try again in a moment."
-daily-limit-exceeded: "&cYou have exceeded your daily limit for this command."
-player-blacklisted: "&cYou are blacklisted from using this feature."
-player-not-whitelisted: "&cYou are not whitelisted to use this feature."
+command-cooldown: "{prefix} <gray>Please wait <yellow>%time%</yellow> before using this command again."
+command-rate-limited: "{prefix} <gold>You're doing that a bit too fast. Please wait a moment."
+global-rate-limited: "{prefix} <red>The server is currently limiting this action due to high usage. Please try again shortly."
+daily-limit-exceeded: "{prefix} <red>You have reached your daily usage limit for this command."
+player-blacklisted: "{prefix} <dark_red>You are restricted from using this feature."
+player-not-whitelisted: "{prefix} <red>This feature is currently restricted to whitelisted players."
 
 # --- Economy Messages ---
-economy-error: "&cAn economy error occurred. Please contact an administrator."
-insufficient-funds: "&cYou do not have enough money to do that. You need %amount%."
+economy-error: "{prefix} <dark_red>Economy service not available. Please report this to an admin."
+insufficient-funds: "{prefix} <red>Not enough funds. You need <gold>%amount%</gold> to do this."
 
 # --- Price Related Messages ---
-invalid-price: "&cInvalid price. Please enter a valid number."
-price-out-of-range: "&cThe price must be between %min_price% and %max_price%."
-currentPrice: "&aThe current price for leaking coordinates is: &e%price%&a."
-setprice-success: "&aPrice for leaking coordinates set to &e%price%&a."
+invalid-price: "{prefix} <red>Invalid price. Please specify a valid number."
+price-out-of-range: "{prefix} <red>The price must be between <yellow>%min_price%</yellow> and <yellow>%max_price%</yellow>."
+current-price: "{prefix} <green>The current price for leaking coordinates is <gold>%price%</gold>."
+setprice-success: "{prefix} <green>Successfully set the coordinate leak price to <gold>%price%</gold>."
 
 # --- Target Related Messages ---
-invalidPlayer: "&cThat player is not online or does not exist."
-cannotTargetYourself: "&cYou cannot target yourself!"
-target-not-online: "&cThe target player is not online."
-target-excluded-world: "&cYou cannot leak coordinates in this world."
-target-excluded-permission: "&cThis player is protected from coordinate leaks."
-target-no-consent: "&cThe target player has not consented to share their coordinates."
-no-leak-target-found: "&cNo suitable player found to leak coordinates."
+invalid-player: "{prefix} <red>The specified player does not exist or is not online."
+cannot-target-yourself: "{prefix} <yellow>You can't select yourself for this action!"
+target-not-online: "{prefix} <red>The target player is no longer online."
+target-excluded-world: "{prefix} <red>This action is not permitted in the target's current world."
+target-excluded-permission: "{prefix} <red>You cannot target this player; they are protected."
+target-no-consent: "{prefix} <red>The target player has not provided consent for this action."
+no-leak-target-found: "{prefix} <yellow>Could not find a suitable random player to target."
 
 # --- Admin Command Confirmation Messages ---
-reload-confirm-required: "&ePlease confirm your action by typing &6/coord %command% confirm &ewithin %time% seconds."
-reload-confirmed: "&aAction confirmed. Plugin reloaded successfully!"
-reload-cancelled: "&cConfirmation expired or cancelled."
-admin-action-logged: "&eAdmin action logged."
+reload-confirm-required: "{prefix} <hover:show_text:'<gray>Click to confirm or type <white>/coord %command% confirm</white>'><yellow>Please confirm this action by typing <gold>/coord %command% confirm</gold> within <white>%time%s</white>.</hover>"
+reload-confirmed: "{prefix} <green>Action confirmed. The plugin has been reloaded successfully."
+reload-cancelled: "{prefix} <red>Confirmation timed out. The action was cancelled."
+admin-action-logged: "{prefix} <dark_gray><i>This administrative action has been logged.</i>"
 
 # --- Leak Command Messages ---
-leak-success: "&aYou successfully leaked &e%player%'s &acoordinates: &e%coords%&a."
-leak:
-  exposed: "<red>Your location has been leaked!"
+leak-success:
+  - "{prefix} <white>A random player has been selected!"
+  - "{prefix} <white>Target: <cyan>%player%"
+  - "{prefix} <white>Coord: <cyan>X=%coordleak_posx%, Z=%coordleak_posz%"
+  - "{prefix} <white>Dimension: <cyan>%coordleak_dimension%"
+leak-exposed: "<dark_red><sound:entity.wither.spawn:0.8:1>A chill runs down your spine... your location has been exposed!</dark_red>"
 
 # --- Share Command Messages ---
-share-success-sender: "&aYou shared &e%player%'s &acoordinates with &e%target%&a."
-share-success-target: "&a%sender% &ashared &e%player%'s &acoordinates with you: &e%coords%&a."
+share-success-sender: "{prefix} <green>You shared your coordinates with <yellow>%target%</yellow>."
+share-success-target: "{prefix} <yellow>%sender%</yellow> <green>shared their location with you: <aqua><hover:show_text:'<gray>Click to copy coordinates to chat!'><click:suggest_command:'%raw_coords%'>%coords%</click></hover></aqua>.<light_purple><sound:entity.experience_orb.pickup:1:1.5>"
 
+# --- Consent Messages ---
+consent:
+  request: |-
+    {prefix} <gray>%sender% wants to share coordinates with you.
+    {prefix} <gray>This request expires in %time% seconds.
+    {prefix} <click:run_command:'/coord consent accept %id%'><hover:show_text:'<green>Click to accept'><green>   [Accept]   </green></hover></click><click:run_command:'/coord consent deny %id%'><hover:show_text:'<red>Click to deny'><red>   [Deny]   </red></hover></click>
+  denied: "{prefix} <red>Your coordinate share request to <yellow>%target%</yellow> was denied."
+  accepted: "{prefix} <green>Your coordinate share request to <yellow>%target%</yellow> was accepted."
+  invalid: "{prefix} <red>This consent request is no longer valid."
+  
 # --- Info Command Layout ---
 info:
   layout:
-    - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
-    - "<white><gradient:#29E7D7:#FFFFFF>CoordLeak Info</gradient>"
-    - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
-    - "<gray>• <white>Version: <aqua>%plugin_version%</aqua>"
-    - "<gray>• <white>Author: <aqua>%plugin_author%</aqua>"
-    - "<gray>• <white>Default Price: <gold>%leak_price%</gold>"
-    - "<gray>• <white>Leak Cooldown: <yellow>%leak_cooldown%</yellow>"
-    - "<gray>• <white>PlaceholderAPI: %papi_status%"
-    - "<gray>• <white>Vault: %vault_status%"
-    - "<gradient:#FF6B6B:#4ECDC4>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</gradient>"
-  enabled: "<green>Enabled</green>"
-  disabled: "<red>Disabled</red>"
+    - "<st><gradient:#4ECDC4:#29E7D7>                                        </gradient></st>"
+    - "<dark_aqua> ● <white>Plugin<dark_gray>:</dark_gray> <gradient:#FFFFFF:#29E7D7>CoordLeak</gradient>"
+    - "<dark_aqua> ● <white>Version<dark_gray>:</dark_gray> <aqua>%plugin_version%</aqua>"
+    - "<dark_aqua> ● <white>Author<dark_gray>:</dark_gray> <aqua>%plugin_author%</aqua>"
+    - ""
+    - "<dark_aqua> ● <white>Leak Price<dark_gray>:</dark_gray> <gold>%leak_price%</gold>"
+    - "<dark_aqua> ● <white>Leak Cooldown<dark_gray>:</dark_gray> <yellow>%leak_cooldown%</yellow>"
+    - ""
+    - "<dark_aqua> ● <white>Placeholders<dark_gray>:</dark_gray> %papi_status%"
+    - "<dark_aqua> ● <white>Economy<dark_gray>:</dark_gray> %vault_status%"
+    - "<st><gradient:#29E7D7:#4ECDC4>                                        </gradient></st>"
+  enabled: "<green>● Enabled</green>"
+  disabled: "<red>● Disabled</red>"
 
 # --- Internal Logging Messages ---
-global-limit-exceeded-log: "&c[CoordLeak] Global rate limit exceeded. Blocking requests for %time% seconds."
+# This message is intended for the console log, not for players.
+global-limit-exceeded-log: "[CoordLeak] Global rate limit of %limit%/%window%ms exceeded. Blocking new requests for %block_duration%ms."
 ```
 
 ## Placeholders (via PlaceholderAPI)
