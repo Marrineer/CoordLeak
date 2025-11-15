@@ -59,6 +59,19 @@ class MessageManagerTest {
                   - "Line 1"
                   - "Line 2"
                   - "Line 3"
+                no-permission: "no-permission"
+                player-only-command: "player-only-command"
+                config-error: "config-error"
+                command-cooldown: "command-cooldown"
+                command-rate-limited: "command-rate-limited"
+                daily-limit-exceeded: "daily-limit-exceeded"
+                economy-error: "economy-error"
+                insufficient-funds: "insufficient-funds"
+                leak-success: "leak-success"
+                share-success-sender: "share-success-sender"
+                share-success-target: "share-success-target"
+                reload-confirmed: "reload-confirmed"
+                setprice-success: "setprice-success"
                 """;
         try (FileWriter writer = new FileWriter(messagesFile)) {
             writer.write(defaultMessages);
@@ -68,7 +81,6 @@ class MessageManagerTest {
         lenient().when(plugin.getConfigManager()).thenReturn(configManager);
         lenient().when(plugin.getLogger()).thenReturn(java.util.logging.Logger.getLogger("Test"));
         lenient().when(plugin.hasPAPI()).thenReturn(false);
-        lenient().when(plugin.adventure()).thenReturn(adventure);
         lenient().when(plugin.audience(any(CommandSender.class))).thenReturn(audience);
         lenient().when(configManager.getPrefix()).thenReturn("[Test]");
 
@@ -134,21 +146,21 @@ class MessageManagerTest {
     void testSend_ToCommandSender() {
         messageManager = new MessageManager(plugin);
         assertDoesNotThrow(() -> messageManager.send(sender, "test-message"));
-        verify(adventure).sender(sender);
+        verify(plugin).audience(sender);
     }
 
     @Test
     void testSend_WithReplacements() {
         messageManager = new MessageManager(plugin);
         assertDoesNotThrow(() -> messageManager.send(sender, "test-with-placeholder", "%player%", "Alice"));
-        verify(adventure).sender(sender);
+        verify(plugin).audience(sender);
     }
 
     @Test
     void testSendList_ValidKey() {
         messageManager = new MessageManager(plugin);
         assertDoesNotThrow(() -> messageManager.sendList(sender, "test-list"));
-        verify(adventure, atLeast(3)).sender(sender);
+        verify(audience, times(3)).sendMessage(any());
     }
 
     @Test

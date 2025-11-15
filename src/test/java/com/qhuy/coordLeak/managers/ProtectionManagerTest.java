@@ -77,7 +77,7 @@ class ProtectionManagerTest {
 
     @Test
     void testCooldown_BypassWithPermission() {
-        when(configManager.getCooldown("leak")).thenReturn(5000L);
+        lenient().when(configManager.getCooldown("leak")).thenReturn(5000L);
         when(player.hasPermission("coordleak.bypass.cooldown")).thenReturn(true);
 
         try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
@@ -91,7 +91,7 @@ class ProtectionManagerTest {
 
     @Test
     void testCooldown_AdminBypassAll() {
-        when(configManager.getCooldown("leak")).thenReturn(5000L);
+        lenient().when(configManager.getCooldown("leak")).thenReturn(5000L);
         when(player.hasPermission("coordleak.admin")).thenReturn(true);
 
         try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
@@ -134,8 +134,8 @@ class ProtectionManagerTest {
 
     @Test
     void testRateLimit_BypassWithPermission() {
-        when(configManager.getRateLimit("leak")).thenReturn(1);
-        when(configManager.getRateLimitWindow("leak")).thenReturn(60000L);
+        lenient().when(configManager.getRateLimit("leak")).thenReturn(1);
+        lenient().when(configManager.getRateLimitWindow("leak")).thenReturn(60000L);
         when(player.hasPermission("coordleak.bypass.ratelimit")).thenReturn(true);
 
         try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
@@ -177,7 +177,7 @@ class ProtectionManagerTest {
 
     @Test
     void testDailyLimit_BypassWithPermission() {
-        when(configManager.getDailyLimit("leak")).thenReturn(1);
+        lenient().when(configManager.getDailyLimit("leak")).thenReturn(1);
         when(player.hasPermission("coordleak.bypass.dailylimit")).thenReturn(true);
 
         try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class)) {
@@ -244,7 +244,6 @@ class ProtectionManagerTest {
     @Test
     void testValidTarget_InExcludedWorld() {
         when(configManager.getExcludedWorlds()).thenReturn(Arrays.asList("world"));
-        when(configManager.getExcludedPermissions()).thenReturn(Arrays.asList());
 
         assertFalse(protectionManager.isValidTarget(player));
     }

@@ -34,6 +34,9 @@ class EconomyManagerTest {
     @Mock
     private AuditLogger auditLogger;
 
+    @Mock
+    private java.util.logging.Logger logger;
+
     private EconomyManager economyManager;
     private UUID playerUUID;
 
@@ -44,6 +47,7 @@ class EconomyManagerTest {
         lenient().when(player.getName()).thenReturn("TestPlayer");
         lenient().when(player.getAddress()).thenReturn(null);
         lenient().when(plugin.getAuditLogger()).thenReturn(auditLogger);
+        lenient().when(plugin.getLogger()).thenReturn(logger);
 
         economyManager = new EconomyManager(plugin, economy);
     }
