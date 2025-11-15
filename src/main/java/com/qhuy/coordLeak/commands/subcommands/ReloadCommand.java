@@ -5,11 +5,12 @@ import com.qhuy.coordLeak.managers.AuditLogger;
 import com.qhuy.coordLeak.managers.ConfigManager;
 import com.qhuy.coordLeak.managers.ProtectionManager;
 import com.qhuy.coordLeak.utils.MessageUtil;
+import com.qhuy.coordLeak.utils.Permissions;
+import com.qhuy.coordLeak.utils.PlayerUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,20 +37,7 @@ public class ReloadCommand implements SubCommand {
 
     @Override
     public @NotNull String getPermission() {
-        return "coordleak.admin";
-    }
-
-    private String resolvePlayerIp(Player player) {
-        InetSocketAddress socketAddr = player.getAddress();
-        if (socketAddr == null || socketAddr.getAddress() == null) return "N/A";
-        return socketAddr.getAddress().getHostAddress();
-    }
-
-    private String getLoggedIp(Player player) {
-        if (!configManager.isIpLoggingEnabled()) {
-            return "REDACTED";
-        }
-        return resolvePlayerIp(player);
+        return Permissions.ADMIN;
     }
 
     @Override
@@ -59,14 +47,15 @@ public class ReloadCommand implements SubCommand {
             return;
         }
 
+        // Console can reload without confirmation
         if (!(sender instanceof Player player)) {
             plugin.reloadManagers();
             messageUtil.send(sender, "reload-confirmed");
-            auditLogger.log("RELOAD", sender.getName(), "N/A", 0, "SUCCESS", "N/A", "Plugin reloaded by console.");
+            auditLogger.log("RELOAD", "Console", "N/A", 0, "SUCCESS", "N/A", "Plugin reloaded by console.");
             return;
         }
 
-        String loggedIp = getLoggedIp(player);
+        String loggedIp = PlayerUtil.getLoggableIp(player, configManager.isIpLoggingEnabled());
 
         boolean confirmRequired = configManager.isReloadRequireConfirm();
         boolean confirmed = args.length > 0 && args[0].equalsIgnoreCase("confirm");
@@ -80,7 +69,7 @@ public class ReloadCommand implements SubCommand {
             return;
         }
 
-        if (confirmRequired) { // Confirmed is true if we reach here
+        if (confirmRequired) {
             if (!protectionManager.hasPendingConfirmation(player.getUniqueId(), "reload")) {
                 messageUtil.send(player, "reload-cancelled");
                 auditLogger.log("RELOAD_ATTEMPT", player.getName(), "N/A", 0, "CONFIRM_EXPIRED", loggedIp, "Player tried to confirm reload but no pending confirmation.");

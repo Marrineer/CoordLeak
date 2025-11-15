@@ -4,6 +4,7 @@ import com.qhuy.coordLeak.commands.CommandManager;
 import com.qhuy.coordLeak.commands.subcommands.*;
 import com.qhuy.coordLeak.managers.AuditLogger;
 import com.qhuy.coordLeak.managers.ConfigManager;
+import com.qhuy.coordLeak.managers.EconomyManager;
 import com.qhuy.coordLeak.managers.MessageManager;
 import com.qhuy.coordLeak.managers.ProtectionManager;
 import com.qhuy.coordLeak.utils.CoordLeakExpansion;
@@ -24,6 +25,7 @@ import org.bukkit.scheduler.BukkitTask;
 public final class CoordLeak extends JavaPlugin {
     private BukkitAudiences adventure;
     private Economy econ;
+    private EconomyManager economyManager;
     private MessageManager messageManager;
     private ConfigManager configManager;
     private ProtectionManager protectionManager;
@@ -43,42 +45,59 @@ public final class CoordLeak extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        saveDefaultConfig();
+        try {
+            saveDefaultConfig();
 
-        // Initialize managers
-        this.adventure = BukkitAudiences.create(this);
-        this.configManager = new ConfigManager(this);
-        this.messageManager = new MessageManager(this);
-        this.protectionManager = new ProtectionManager(this, configManager); // Pass configManager
-        this.auditLogger = new AuditLogger(this, configManager); // Pass configManager
-        this.messageUtil = new MessageUtil(this);
-        this.sanitizer = new Sanitizer();
+            // Initialize managers in dependency order
+            this.adventure = BukkitAudiences.create(this);
+            this.configManager = new ConfigManager(this);
+            this.messageManager = new MessageManager(this);
+            this.protectionManager = new ProtectionManager(this, configManager);
+            this.auditLogger = new AuditLogger(this, configManager);
+            this.messageUtil = new MessageUtil(this);
+            this.sanitizer = new Sanitizer();
 
-        // Check for PlaceholderAPI
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            PAPI = new CoordLeakExpansion(this);
-            PAPIEnabled = PAPI.register();
-            getLogger().info("PlaceholderAPI found and hooked.");
-        } else {
-            getLogger().info("PlaceholderAPI not found, skipping hook.");
-        }
+            // Check for PlaceholderAPI
+            if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+                PAPI = new CoordLeakExpansion(this);
+                PAPIEnabled = PAPI.register();
+                getLogger().info("PlaceholderAPI found and hooked.");
+            } else {
+                getLogger().info("PlaceholderAPI not found, skipping hook.");
+            }
 
-        // Check for Vault
-        if (!setupEconomy()) {
-            getLogger().severe("Vault not found or no economy plugin, disabling plugin...");
+            // Check for Vault
+            if (!setupEconomy()) {
+                getLogger().severe("Vault not found or no economy plugin, disabling plugin...");
+                Bukkit.getPluginManager().disablePlugin(this);
+                return;
+            }
+            
+            // Initialize economy manager with the economy instance
+            this.economyManager = new EconomyManager(this, econ);
+            getLogger().info("Vault found and hooked.");
+
+            // Start cleanup task for ProtectionManager
+            long cleanupInterval = 20L * 300; // 5 minutes
+            this.cleanupTask = Bukkit.getScheduler().runTaskTimer(this, () -> {
+                try {
+                    protectionManager.cleanup();
+                } catch (Exception e) {
+                    getLogger().severe("Error during protection cleanup: " + e.getMessage());
+                }
+            }, cleanupInterval, cleanupInterval);
+
+            // Register commands
+            setupCommands();
+
+            info(InfoStatus.START);
+        } catch (Exception e) {
+            getLogger().severe("Failed to initialize plugin: " + e.getMessage());
+            if (e.getCause() != null) {
+                getLogger().severe("Caused by: " + e.getCause().getMessage());
+            }
             Bukkit.getPluginManager().disablePlugin(this);
-            return;
         }
-        getLogger().info("Vault found and hooked.");
-
-        // Start cleanup task for ProtectionManager
-        long cleanupInterval = 20L * 300; // 5 minutes
-        this.cleanupTask = Bukkit.getScheduler().runTaskTimer(this, protectionManager::cleanup, cleanupInterval, cleanupInterval);
-
-        // Register commands
-        setupCommands();
-
-        info(InfoStatus.START);
     }
 
     private void setupCommands() {
@@ -105,22 +124,58 @@ public final class CoordLeak extends JavaPlugin {
     public void onDisable() {
         info(InfoStatus.STOP);
 
+        // Unregister PAPI expansion
         if (PAPI != null && PAPI.isRegistered()) {
-            PAPI.unregister();
+            try {
+                PAPI.unregister();
+            } catch (Exception e) {
+                getLogger().warning("Error unregistering PAPI: " + e.getMessage());
+            }
         }
 
+        // Close Adventure
         if (this.adventure != null) {
-            this.adventure.close();
-            this.adventure = null;
+            try {
+                this.adventure.close();
+                this.adventure = null;
+            } catch (Exception e) {
+                getLogger().warning("Error closing Adventure: " + e.getMessage());
+            }
         }
 
+        // Cancel cleanup task
         if (this.cleanupTask != null) {
-            this.cleanupTask.cancel();
+            try {
+                this.cleanupTask.cancel();
+            } catch (Exception e) {
+                getLogger().warning("Error canceling cleanup task: " + e.getMessage());
+            }
         }
+        
+        // Shutdown economy manager
+        if (this.economyManager != null) {
+            try {
+                this.economyManager.shutdown();
+            } catch (Exception e) {
+                getLogger().warning("Error shutting down economy manager: " + e.getMessage());
+            }
+        }
+        
+        // Shutdown audit logger
         if (this.auditLogger != null) {
-            this.auditLogger.shutdown(); // Shutdown audit logger executor
+            try {
+                this.auditLogger.shutdown();
+            } catch (Exception e) {
+                getLogger().warning("Error shutting down audit logger: " + e.getMessage());
+            }
         }
-        saveConfig();
+        
+        // Save config
+        try {
+            saveConfig();
+        } catch (Exception e) {
+            getLogger().warning("Error saving config: " + e.getMessage());
+        }
     }
 
     public void reloadManagers() {
@@ -213,6 +268,10 @@ public final class CoordLeak extends JavaPlugin {
 
     public Sanitizer getSanitizer() {
         return sanitizer;
+    }
+
+    public EconomyManager getEconomyManager() {
+        return economyManager;
     }
 
     public Economy getEconomy() {

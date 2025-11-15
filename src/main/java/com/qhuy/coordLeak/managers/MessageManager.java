@@ -17,10 +17,13 @@ public class MessageManager {
     private final CoordLeak plugin;
     private final File file;
     private FileConfiguration messages;
+    private final MiniMessage miniMessage;
 
     public MessageManager(CoordLeak plugin) {
         this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), "messages.yml");
+        this.miniMessage = MiniMessage.miniMessage();
+        
         if (!file.exists()) {
             plugin.saveResource("messages.yml", false);
         }
@@ -29,13 +32,44 @@ public class MessageManager {
 
     public void reloadMessages() {
         this.messages = YamlConfiguration.loadConfiguration(file);
-        try (InputStreamReader reader = new InputStreamReader(plugin.getResource("messages.yml"), StandardCharsets.UTF_8)) {
+        
+        // Load defaults from jar without overwriting user config
+        try (InputStreamReader reader = new InputStreamReader(
+                plugin.getResource("messages.yml"), StandardCharsets.UTF_8)) {
             FileConfiguration defaultMessages = YamlConfiguration.loadConfiguration(reader);
             messages.setDefaults(defaultMessages);
-            messages.options().copyDefaults(true);
-            plugin.saveResource("messages.yml", false); // Save to copy new defaults
+            
+            // Log validation warnings
+            validateMessageKeys();
         } catch (Exception e) {
             plugin.getLogger().severe("Could not load default messages.yml: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Validates that commonly-used message keys exist.
+     */
+    private void validateMessageKeys() {
+        String[] requiredKeys = {
+            "no-permission", "player-only-command", "config-error",
+            "command-cooldown", "command-rate-limited", "daily-limit-exceeded",
+            "economy-error", "insufficient-funds",
+            "leak-success", "share-success-sender", "share-success-target",
+            "reload-confirmed", "setprice-success"
+        };
+        
+        int missing = 0;
+        for (String key : requiredKeys) {
+            if (!messages.contains(key)) {
+                plugin.getLogger().warning("Missing required message key: " + key);
+                missing++;
+            }
+        }
+        
+        if (missing == 0) {
+            plugin.getLogger().info("Message validation passed (" + requiredKeys.length + " keys checked)");
+        } else {
+            plugin.getLogger().warning("Message validation found " + missing + " missing keys");
         }
     }
 
@@ -107,7 +141,7 @@ public class MessageManager {
     public void send(CommandSender sender, String key, String... replacements) {
         Player player = sender instanceof Player ? (Player) sender : null;
         String message = getFormattedString(key, player, replacements);
-        plugin.audience(sender).sendMessage(MiniMessage.miniMessage().deserialize(message));
+        plugin.audience(sender).sendMessage(miniMessage.deserialize(message));
     }
 
     /**
@@ -128,7 +162,7 @@ public class MessageManager {
 
         for (String message : messageList) {
             String formattedMessage = format(message, player, replacements);
-            plugin.audience(sender).sendMessage(MiniMessage.miniMessage().deserialize(formattedMessage));
+            plugin.audience(sender).sendMessage(miniMessage.deserialize(formattedMessage));
         }
     }
 }

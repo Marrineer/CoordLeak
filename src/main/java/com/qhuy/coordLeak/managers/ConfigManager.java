@@ -70,37 +70,48 @@ public class ConfigManager {
     public void loadConfig() {
         plugin.reloadConfig();
         FileConfiguration config = plugin.getConfig();
+        
+        // Save defaults if config is empty
+        plugin.saveDefaultConfig();
 
-        // General Settings
+        // General Settings with validation
         prefix = config.getString("prefix", "<i><gradient:#FFFFFF:#29E7D7>[ Coord ]</gradient></i>");
+        if (prefix == null || prefix.trim().isEmpty()) {
+            prefix = "<i><gradient:#FFFFFF:#29E7D7>[ Coord ]</gradient></i>";
+            plugin.getLogger().warning("Invalid prefix in config, using default");
+        }
 
-        // Price Settings
-        defaultPrice = config.getDouble("price.default", 50.0);
-        minPrice = config.getDouble("price.min", 1.0);
-        maxPrice = config.getDouble("price.max", 100000.0);
+        // Price Settings with validation
+        defaultPrice = Math.max(0, config.getDouble("price.default", 50.0));
+        minPrice = Math.max(0, config.getDouble("price.min", 1.0));
+        maxPrice = Math.max(minPrice, config.getDouble("price.max", 100000.0));
+        
+        // Ensure price bounds are logical
+        if (defaultPrice < minPrice) defaultPrice = minPrice;
+        if (defaultPrice > maxPrice) defaultPrice = maxPrice;
 
-        // Cooldowns (per-command)
-        leakCooldown = config.getLong("cooldowns.leak", 5) * 1000L;
-        shareCooldown = config.getLong("cooldowns.share", 2) * 1000L;
-        setPriceCooldown = config.getLong("cooldowns.setprice", 5) * 1000L;
+        // Cooldowns (per-command) - ensure non-negative
+        leakCooldown = Math.max(0, config.getLong("cooldowns.leak", 5)) * 1000L;
+        shareCooldown = Math.max(0, config.getLong("cooldowns.share", 2)) * 1000L;
+        setPriceCooldown = Math.max(0, config.getLong("cooldowns.setprice", 5)) * 1000L;
 
-        // Rate Limits (per-command, per-player)
-        leakRateLimit = config.getInt("ratelimit.leak.limit", 5);
-        leakRateLimitWindow = config.getLong("ratelimit.leak.window", TimeUnit.SECONDS.toMillis(60));
-        shareRateLimit = config.getInt("ratelimit.share.limit", 10);
-        shareRateLimitWindow = config.getLong("ratelimit.share.window", TimeUnit.SECONDS.toMillis(30));
-        setPriceRateLimit = config.getInt("ratelimit.setprice.limit", 1);
-        setPriceRateLimitWindow = config.getLong("ratelimit.setprice.window", TimeUnit.SECONDS.toMillis(10));
+        // Rate Limits (per-command, per-player) - ensure positive values
+        leakRateLimit = Math.max(1, config.getInt("ratelimit.leak.limit", 5));
+        leakRateLimitWindow = Math.max(1000, config.getLong("ratelimit.leak.window", TimeUnit.SECONDS.toMillis(60)));
+        shareRateLimit = Math.max(1, config.getInt("ratelimit.share.limit", 10));
+        shareRateLimitWindow = Math.max(1000, config.getLong("ratelimit.share.window", TimeUnit.SECONDS.toMillis(30)));
+        setPriceRateLimit = Math.max(1, config.getInt("ratelimit.setprice.limit", 1));
+        setPriceRateLimitWindow = Math.max(1000, config.getLong("ratelimit.setprice.window", TimeUnit.SECONDS.toMillis(10)));
 
-        // Global Rate Limit
+        // Global Rate Limit - ensure reasonable values
         globalRateLimitEnabled = config.getBoolean("global.ratelimit.enabled", true);
-        globalRateLimit = config.getInt("global.ratelimit.limit", 200);
-        globalRateLimitWindow = config.getLong("global.ratelimit.window", TimeUnit.MINUTES.toMillis(1));
-        globalRateLimitBlockDuration = config.getLong("global.ratelimit.block-duration", TimeUnit.SECONDS.toMillis(10));
+        globalRateLimit = Math.max(1, config.getInt("global.ratelimit.limit", 200));
+        globalRateLimitWindow = Math.max(1000, config.getLong("global.ratelimit.window", TimeUnit.MINUTES.toMillis(1)));
+        globalRateLimitBlockDuration = Math.max(1000, config.getLong("global.ratelimit.block-duration", TimeUnit.SECONDS.toMillis(10)));
 
-        // Daily Limits (per-command, per-player)
-        dailyLeakLimit = config.getInt("limits.daily.leak", 50);
-        dailyShareLimit = config.getInt("limits.daily.share", 100);
+        // Daily Limits (per-command, per-player) - 0 means unlimited
+        dailyLeakLimit = Math.max(0, config.getInt("limits.daily.leak", 50));
+        dailyShareLimit = Math.max(0, config.getInt("limits.daily.share", 100));
 
         // Audit Logging
         auditLoggingEnabled = config.getBoolean("audit.enabled", true);
@@ -117,18 +128,27 @@ public class ConfigManager {
 
         // Reload/Admin Command Protection
         reloadRequireConfirm = config.getBoolean("reload.require-confirm", true);
-        confirmationTimeout = config.getLong("reload.confirmation-timeout", TimeUnit.SECONDS.toMillis(10));
+        confirmationTimeout = Math.max(1000, config.getLong("reload.confirmation-timeout", TimeUnit.SECONDS.toMillis(10)));
 
-        // Blacklist/Whitelist
+        // Blacklist/Whitelist - handle null lists
         blacklistEnabled = config.getBoolean("blacklist.enabled", false);
-        blacklistedUUIDs = config.getStringList("blacklist.uuids");
+        List<String> tempBlacklist = config.getStringList("blacklist.uuids");
+        blacklistedUUIDs = tempBlacklist != null ? tempBlacklist : new java.util.ArrayList<>();
+        
         whitelistEnabled = config.getBoolean("whitelist.enabled", false);
-        whitelistedUUIDs = config.getStringList("whitelist.uuids");
+        List<String> tempWhitelist = config.getStringList("whitelist.uuids");
+        whitelistedUUIDs = tempWhitelist != null ? tempWhitelist : new java.util.ArrayList<>();
 
-        // Target Validation
-        excludedWorlds = config.getStringList("target.exclude-worlds");
-        excludedPermissions = config.getStringList("target.exclude-permissions");
+        // Target Validation - handle null lists
+        List<String> tempWorlds = config.getStringList("target.exclude-worlds");
+        excludedWorlds = tempWorlds != null ? tempWorlds : new java.util.ArrayList<>();
+        
+        List<String> tempPerms = config.getStringList("target.exclude-permissions");
+        excludedPermissions = tempPerms != null ? tempPerms : new java.util.ArrayList<>();
+        
         requireConsentForShare = config.getBoolean("target.require-consent-for-share", false);
+        
+        plugin.getLogger().info("Configuration loaded successfully");
     }
 
     // --- Getters ---

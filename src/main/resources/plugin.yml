@@ -1,10 +1,10 @@
 name: CoordLeak
-version: 'v0.1-pre2'
+version: 'v1.0.0'
 main: com.qhuy.coordLeak.CoordLeak
 api-version: '1.21'
 load: POSTWORLD
 authors: [ qhuy ]
-description: Allows players to buy usages to leak the coordinates of random online players.
+description: Production-grade plugin for coordinate leaking and sharing with economy integration
 depend: [Vault]
 softdepend: [Essentials, PlaceholderAPI]
 libraries:
@@ -12,13 +12,42 @@ libraries:
   - net.kyori:adventure-api:4.24.0
   - net.kyori:adventure-text-minimessage:4.24.0
 permissions:
+  coordleak.*:
+    description: Grants all CoordLeak permissions
+    default: op
+    children:
+      coordleak.admin: true
+      coordleak.leak: true
+      coordleak.share: true
+      coordleak.setprice: true
+      coordleak.bypass.*: true
   coordleak.admin:
+    description: Admin permission for reload and management
     default: op
   coordleak.leak:
+    description: Allows leaking random player coordinates
     default: true
   coordleak.share:
+    description: Allows sharing your coordinates
     default: true
   coordleak.setprice:
+    description: Allows setting the leak price
+    default: op
+  coordleak.bypass.*:
+    description: Grants all bypass permissions
+    default: op
+    children:
+      coordleak.bypass.cooldown: true
+      coordleak.bypass.ratelimit: true
+      coordleak.bypass.dailylimit: true
+  coordleak.bypass.cooldown:
+    description: Bypass cooldown restrictions
+    default: op
+  coordleak.bypass.ratelimit:
+    description: Bypass rate limit restrictions
+    default: op
+  coordleak.bypass.dailylimit:
+    description: Bypass daily limit restrictions
     default: op
 commands:
   coord:

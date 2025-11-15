@@ -1,34 +1,33 @@
-# CoordLeak Plugin Messages - Enhanced by Gemini
-# All messages support MiniMessage format. For a full guide, visit: https://docs.advntr.dev/minimessage/format.html
-# Use the {prefix} placeholder to insert the prefix defined in config.yml.
+# CoordLeak Plugin Messages
+# All messages support MiniMessage format: https://docs.advntr.dev/minimessage/format.html
+# Use {prefix} placeholder to insert the prefix from config.yml
 
-# --- General Messages ---
+# ==========================================
+# COMMON MESSAGES
+# ==========================================
 no-permission: "{prefix} <red>You lack the required permission to perform this action."
 player-only-command: "{prefix} <red>This command is for players only."
 config-error: "{prefix} <dark_red>A configuration error was detected. Please notify an administrator."
-invalid-argument: "{prefix} <yellow>Invalid argument. Use <white>/coord help</white> for command usage."
 
-# --- Command Feedback Messages ---
+# ==========================================
+# PROTECTION & LIMITS
+# ==========================================
 command-cooldown: "{prefix} <gray>Please wait <yellow>%time%</yellow> before using this command again."
 command-rate-limited: "{prefix} <gold>You're doing that a bit too fast. Please wait a moment."
-share-usage: "{prefix} <red>Usage: /coord share <player> [message]"
 global-rate-limited: "{prefix} <red>The server is currently limiting this action due to high usage. Please try again shortly."
 daily-limit-exceeded: "{prefix} <red>You have reached your daily usage limit for this command."
 player-blacklisted: "{prefix} <dark_red>You are restricted from using this feature."
 player-not-whitelisted: "{prefix} <red>This feature is currently restricted to whitelisted players."
 
-# --- Economy Messages ---
+# ==========================================
+# ECONOMY
+# ==========================================
 economy-error: "{prefix} <dark_red>Economy service not available. Please report this to an admin."
 insufficient-funds: "{prefix} <red>Not enough funds. You need <gold>%amount%</gold> to do this."
 
-# --- Price Related Messages ---
-invalid-price: "{prefix} <red>Invalid price. Please specify a valid number."
-price-out-of-range: "{prefix} <red>The price must be between <yellow>%min_price%</yellow> and <yellow>%max_price%</yellow>."
-current-price: "{prefix} <green>The current price for leaking coordinates is <gold>%price%</gold>."
-setprice-success: "{prefix} <green>Successfully set the coordinate leak price to <gold>%price%</gold>."
-
-# --- Target Related Messages ---
-invalid-player: "{prefix} <red>The specified player does not exist or is not online."
+# ==========================================
+# TARGET VALIDATION
+# ==========================================
 cannot-target-yourself: "{prefix} <yellow>You can't select yourself for this action!"
 target-not-online: "{prefix} <red>The target player is no longer online."
 target-excluded-world: "{prefix} <red>This action is not permitted in the target's current world."
@@ -36,13 +35,9 @@ target-excluded-permission: "{prefix} <red>You cannot target this player; they a
 target-no-consent: "{prefix} <red>The target player has not provided consent for this action."
 no-leak-target-found: "{prefix} <yellow>Could not find a suitable random player to target."
 
-# --- Admin Command Confirmation Messages ---
-reload-confirm-required: "{prefix} <hover:show_text:'<gray>Click to confirm or type <white>/coord %command% confirm</white>'><yellow>Please confirm this action by typing <gold>/coord %command% confirm</gold> within <white>%time%s</white>.</hover>"
-reload-confirmed: "{prefix} <green>Action confirmed. The plugin has been reloaded successfully."
-reload-cancelled: "{prefix} <red>Confirmation timed out. The action was cancelled."
-admin-action-logged: "{prefix} <dark_gray><i>This administrative action has been logged.</i>"
-
-# --- Leak Command Messages ---
+# ==========================================
+# COMMAND: LEAK
+# ==========================================
 leak-success:
   - "{prefix} <white>A random player has been selected!"
   - "{prefix} <white>Target: <cyan>%player%"
@@ -50,21 +45,31 @@ leak-success:
   - "{prefix} <white>Dimension: <cyan>%coordleak_dimension%"
 leak-exposed: "<dark_red><sound:entity.wither.spawn:0.8:1>A chill runs down your spine... your location has been exposed!</dark_red>"
 
-# --- Share Command Messages ---
+# ==========================================
+# COMMAND: SHARE
+# ==========================================
+share-usage: "{prefix} <red>Usage: /coord share <player> [message]"
 share-success-sender: "{prefix} <green>You shared your coordinates with <yellow>%target%</yellow>."
 share-success-target: "{prefix} <yellow>%sender%</yellow> <green>shared their location with you: <aqua><hover:show_text:'<gray>Click to copy coordinates to chat!'><click:suggest_command:'%raw_coords%'>%coords%</click></hover></aqua>.<light_purple><sound:entity.experience_orb.pickup:1:1.5>"
 
-# --- Consent Messages ---
-consent:
-  request: |-
-    <gray>%sender% wants to share coordinates with you.
-    <gray>This request expires in %time% seconds.
-    <click:run_command:'/coord consent accept %id%'><hover:show_text:'<green>Click to accept'><green>   [Accept]   </green></hover></click><click:run_command:'/coord consent deny %id%'><hover:show_text:'<red>Click to deny'><red>   [Deny]   </red></hover></click>
-  denied: "{prefix} <red>Your coordinate share request to <yellow>%target%</yellow> was denied."
-  accepted: "{prefix} <green>Your coordinate share request to <yellow>%target%</yellow> was accepted."
-  invalid: "{prefix} <red>This consent request is no longer valid."
-  
-# --- Info Command Layout ---
+# ==========================================
+# COMMAND: SETPRICE
+# ==========================================
+invalid-price: "{prefix} <red>Invalid price. Please specify a valid number."
+price-out-of-range: "{prefix} <red>The price must be between <yellow>%min_price%</yellow> and <yellow>%max_price%</yellow>."
+current-price: "{prefix} <green>The current price for leaking coordinates is <gold>%price%</gold>."
+setprice-success: "{prefix} <green>Successfully set the coordinate leak price to <gold>%price%</gold>."
+
+# ==========================================
+# COMMAND: RELOAD & ADMIN
+# ==========================================
+reload-confirm-required: "{prefix} <hover:show_text:'<gray>Click to confirm or type <white>/coord %command% confirm</white>'><yellow>Please confirm this action by typing <gold>/coord %command% confirm</gold> within <white>%time%s</white>.</hover>"
+reload-confirmed: "{prefix} <green>Action confirmed. The plugin has been reloaded successfully."
+reload-cancelled: "{prefix} <red>Confirmation timed out. The action was cancelled."
+
+# ==========================================
+# COMMAND: INFO
+# ==========================================
 info:
   layout:
     - "<st><gradient:#4ECDC4:#29E7D7>                                        </gradient></st>"
@@ -81,6 +86,15 @@ info:
   enabled: "<green>● Enabled</green>"
   disabled: "<red>● Disabled</red>"
 
-# --- Internal Logging Messages ---
-# This message is intended for the console log, not for players.
-global-limit-exceeded-log: "[CoordLeak] Global rate limit of %limit%/%window%ms exceeded. Blocking new requests for %block_duration%ms."
+# ==========================================
+# COMMAND: HELP
+# ==========================================
+help:
+  layout:
+    - "<st><gradient:#4ECDC4:#29E7D7>                                        </gradient></st>"
+    - "<dark_aqua> ● <white>/coord leak</white> <dark_gray>-</dark_gray> <gray>Leak a random player's coordinates"
+    - "<dark_aqua> ● <white>/coord share <player> [msg]</white> <dark_gray>-</dark_gray> <gray>Share your coords"
+    - "<dark_aqua> ● <white>/coord info</white> <dark_gray>-</dark_gray> <gray>View plugin information"
+    - "<dark_aqua> ● <white>/coord reload [confirm]</white> <dark_gray>-</dark_gray> <gray>Reload the plugin"
+    - "<dark_aqua> ● <white>/coord setprice <amount></white> <dark_gray>-</dark_gray> <gray>Set leak price"
+    - "<st><gradient:#29E7D7:#4ECDC4>                                        </gradient></st>"

@@ -29,31 +29,82 @@ public class CoordLeakExpansion extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player player, @NotNull String identifier) {
-        if (player == null) return "";
+        // Null safety
+        if (player == null) {
+            return "";
+        }
+        
+        // Lifecycle safety - check if plugin/managers are still valid
+        if (plugin == null || plugin.getProtectionManager() == null) {
+            return "";
+        }
 
         // %coordleak_cooldown_remaining_<command>%
         if (identifier.startsWith("cooldown_remaining_")) {
             String cmd = identifier.substring("cooldown_remaining_".length());
-            long remaining = plugin.getProtectionManager().getRemainingCooldown(player.getUniqueId(), cmd);
-            return String.valueOf(remaining / 1000); // seconds
+            
+            // Validate command name
+            if (cmd.isEmpty() || !cmd.matches("[a-z]+")) {
+                return "0";
+            }
+            
+            try {
+                long remaining = plugin.getProtectionManager().getRemainingCooldown(player.getUniqueId(), cmd);
+                return String.valueOf(remaining / 1000); // seconds
+            } catch (Exception e) {
+                return "0";
+            }
         }
 
         // %coordleak_last_shared_<player>%
         if (identifier.startsWith("last_shared_")) {
-            // Placeholder for tracking; not implemented yet
-            return "N/A";
+            // Not implemented - return empty instead of "N/A"
+            return "";
         }
 
         return switch (identifier.toLowerCase()) {
-            case "dimension" -> switch (player.getWorld().getEnvironment()) {
-                case NORMAL -> "Overworld";
-                case NETHER -> "Nether";
-                case THE_END -> "The End";
-                default -> player.getWorld().getName();
-            };
-            case "posx" -> String.valueOf(player.getLocation().getBlockX());
-            case "posy" -> String.valueOf(player.getLocation().getBlockY());
-            case "posz" -> String.valueOf(player.getLocation().getBlockZ());
+            case "dimension" -> {
+                try {
+                    if (player.getWorld() == null) yield "Unknown";
+                    yield switch (player.getWorld().getEnvironment()) {
+                        case NORMAL -> "Overworld";
+                        case NETHER -> "Nether";
+                        case THE_END -> "The End";
+                        default -> player.getWorld().getName();
+                    };
+                } catch (Exception e) {
+                    yield "Unknown";
+                }
+            }
+            case "posx" -> {
+                try {
+                    yield String.valueOf(player.getLocation().getBlockX());
+                } catch (Exception e) {
+                    yield "0";
+                }
+            }
+            case "posy" -> {
+                try {
+                    yield String.valueOf(player.getLocation().getBlockY());
+                } catch (Exception e) {
+                    yield "0";
+                }
+            }
+            case "posz" -> {
+                try {
+                    yield String.valueOf(player.getLocation().getBlockZ());
+                } catch (Exception e) {
+                    yield "0";
+                }
+            }
+            case "price" -> {
+                try {
+                    if (plugin.getConfigManager() == null) yield "0.00";
+                    yield String.format("%.2f", plugin.getConfigManager().getDefaultPrice());
+                } catch (Exception e) {
+                    yield "0.00";
+                }
+            }
             default -> null;
         };
     }

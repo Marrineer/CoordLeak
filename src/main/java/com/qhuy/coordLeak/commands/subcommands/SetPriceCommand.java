@@ -5,11 +5,12 @@ import com.qhuy.coordLeak.managers.AuditLogger;
 import com.qhuy.coordLeak.managers.ConfigManager;
 import com.qhuy.coordLeak.managers.ProtectionManager;
 import com.qhuy.coordLeak.utils.MessageUtil;
+import com.qhuy.coordLeak.utils.Permissions;
+import com.qhuy.coordLeak.utils.PlayerUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class SetPriceCommand implements SubCommand {
 
     @Override
     public @NotNull String getPermission() {
-        return "coordleak.setprice";
+        return Permissions.SETPRICE;
     }
 
     @Override
@@ -46,26 +47,11 @@ public class SetPriceCommand implements SubCommand {
             return;
         }
 
-        String ip = "N/A";
-        Player player = null;
-        if (sender instanceof Player) {
-            player = (Player) sender;
-            InetSocketAddress socketAddr = player.getAddress();
-            if (socketAddr != null && socketAddr.getAddress() != null) {
-                ip = socketAddr.getAddress().getHostAddress();
-            } else {
-                ip = "unknown";
-            }
-        }
+        Player player = sender instanceof Player ? (Player) sender : null;
+        String loggedIp = PlayerUtil.getLoggableIp(player, configManager.isIpLoggingEnabled());
 
-        String loggedIp;
-        if (!configManager.isIpLoggingEnabled()) {
-            loggedIp = "REDACTED";
-        } else {
-            loggedIp = ip;
-        }
-
-        if (player != null) { // Only apply cooldown/ratelimit if sender is a player
+        // Only apply cooldown/ratelimit if sender is a player
+        if (player != null) {
             if (protectionManager.isOnCooldown(player.getUniqueId(), "setprice")) {
                 long remaining = protectionManager.getRemainingCooldown(player.getUniqueId(), "setprice");
                 messageUtil.send(player, "command-cooldown", "%time%", MessageUtil.formatTime(remaining));
@@ -79,12 +65,14 @@ public class SetPriceCommand implements SubCommand {
             }
         }
 
+        // Show current price if no arguments
         if (args.length < 1) {
             double currentPrice = configManager.getDefaultPrice();
             messageUtil.send(sender, "current-price", "%price%", String.format("%.2f", currentPrice));
             return;
         }
 
+        // Parse and validate new price
         double newPrice;
         try {
             newPrice = Double.parseDouble(args[0]);
@@ -102,6 +90,7 @@ public class SetPriceCommand implements SubCommand {
             return;
         }
 
+        // Handle confirmation for players
         if (player != null) {
             boolean confirmRequired = configManager.isReloadRequireConfirm();
             boolean confirmed = args.length > 1 && args[1].equalsIgnoreCase("confirm");
@@ -115,7 +104,7 @@ public class SetPriceCommand implements SubCommand {
                 return;
             }
 
-            if (confirmRequired) { // confirmed is true
+            if (confirmRequired) {
                 if (!protectionManager.hasPendingConfirmation(player.getUniqueId(), "setprice")) {
                     messageUtil.send(player, "reload-cancelled");
                     auditLogger.log("SET_PRICE_ATTEMPT", player.getName(), String.valueOf(newPrice), newPrice, "CONFIRM_EXPIRED", loggedIp, "Player tried to confirm setprice but no pending confirmation.");
@@ -125,11 +114,14 @@ public class SetPriceCommand implements SubCommand {
             }
         }
 
+        // Apply the price change
         configManager.setDefaultPrice(newPrice);
+        
         if (player != null) {
             protectionManager.applyCooldown(player.getUniqueId(), "setprice");
             protectionManager.recordRateLimitUsage(player.getUniqueId(), "setprice");
         }
+        
         messageUtil.send(sender, "setprice-success", "%price%", String.format("%.2f", newPrice));
         auditLogger.log("SET_PRICE", sender.getName(), "N/A", newPrice, "SUCCESS", loggedIp, "Price set to " + newPrice);
     }

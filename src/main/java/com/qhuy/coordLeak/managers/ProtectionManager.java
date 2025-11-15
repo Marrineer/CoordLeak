@@ -1,6 +1,7 @@
 package com.qhuy.coordLeak.managers;
 
 import com.qhuy.coordLeak.CoordLeak;
+import com.qhuy.coordLeak.utils.Permissions;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -294,19 +295,21 @@ public class ProtectionManager {
      */
     public boolean hasBypassPermission(UUID playerUUID, String type) {
         Player player = Bukkit.getPlayer(playerUUID);
-        if (player == null) return false; // Only online players can have permissions
+        if (player == null) return false;
 
-        if (player.hasPermission("coordleak.admin")) {
-            return true; // Admin bypasses everything
+        if (player.hasPermission(Permissions.ADMIN)) {
+            return true;
         }
 
         switch (type) {
             case "cooldown":
-                return player.hasPermission("coordleak.bypass.cooldown");
+                return player.hasPermission(Permissions.BYPASS_COOLDOWN);
             case "ratelimit":
-                return player.hasPermission("coordleak.bypass.ratelimit");
+                return player.hasPermission(Permissions.BYPASS_RATELIMIT);
             case "dailylimit":
-                return player.hasPermission("coordleak.bypass.dailylimit");
+                return player.hasPermission(Permissions.BYPASS_DAILYLIMIT);
+            case "admin":
+                return player.hasPermission(Permissions.ADMIN);
             default:
                 return false;
         }

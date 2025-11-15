@@ -8,6 +8,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Displays help/usage information for plugin commands.
+ */
 public class HelpCommand implements SubCommand {
     private final MessageUtil messageUtil;
 
@@ -22,13 +25,13 @@ public class HelpCommand implements SubCommand {
 
     @Override
     public @Nullable String getPermission() {
-        return null; // No permission required to see help
+        return null;
     }
 
     @Override
     public void execute(@NotNull CommandSender sender, @NotNull String[] args) {
-        // The original command used "info.layout" for the help message.
-        messageUtil.sendList(sender, "info.layout");
+        // Send dedicated help message
+        messageUtil.sendList(sender, "help.layout");
     }
 
     @Override

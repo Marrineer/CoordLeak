@@ -61,7 +61,7 @@ public class AuditLogger {
         String timestamp = iso8601.format(Instant.now());
         String logEntry = String.format("{\"timestamp\":\"%s\",\"action\":\"%s\",\"executor\":\"%s\",\"target\":\"%s\",\"price\":%.2f,\"result\":\"%s\",\"ip\":\"%s\",\"details\":\"%s\"}%n",
                 timestamp, escape(action), escape(executorName), escape(target), price, escape(result),
-                configManager.isAuditLogSensitiveEnabled() ? escape(ipAddress) : "N/A", escape(details));
+                configManager.isIpLoggingEnabled() ? escape(ipAddress) : "N/A", escape(details));
 
         logQueue.offer(logEntry);
     }
